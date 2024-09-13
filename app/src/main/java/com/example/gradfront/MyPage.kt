@@ -1,17 +1,32 @@
 package com.example.gradfront
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gradfront.databinding.ActivityMyPageBinding
+import com.kakao.sdk.user.UserApiClient
 
 class MyPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMyPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.logoutBtn.setOnClickListener {
+            // 로그아웃
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                }
+                else {
+                    Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+                }
+            }
+        }
 
         // RecyclerView 설정
         binding.myRv.layoutManager = LinearLayoutManager(this)

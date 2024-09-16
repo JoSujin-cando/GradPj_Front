@@ -42,6 +42,9 @@ class MyPage : AppCompatActivity() {
             startActivity(intent)
         }
         binding.myRv.adapter = adapter
+
+        //itemDecoration
+        binding.myRv.addItemDecoration(SpacingItem(20))
     }
 
     private fun getData(): List<ItemData> {

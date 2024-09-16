@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-            //selectedItemId = R.id.home
+            selectedItemId = R.id.home
         }
 
         binding.mainBtn.setOnClickListener{

@@ -4,7 +4,7 @@
         android:id="@+id/perf"
         android:title="공연리스트"
         android:icon="@drawable/perflist"
-        android:tint="@null"/>
+        android:iconTint="#FFD900"/>
     <item
         android:id="@+id/home"
         android:title=""
@@ -13,5 +13,5 @@
         android:id="@+id/song"
         android:title="노래추천"
         android:icon="@drawable/song"
-        android:tint="@null"/>
+        android:iconTint="@color/white"/>
 </menu>

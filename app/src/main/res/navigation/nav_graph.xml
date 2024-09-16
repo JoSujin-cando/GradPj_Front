@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/songFragment1">
+
+    <fragment
+        android:id="@+id/songFragment1"
+        android:name="com.example.gradfront.fragment.SongFragment1"
+        tools:layout="@layout/fragment_song1" >
+        <action
+            android:id="@+id/action_songFragment1_to_songFragment2"
+            app:destination="@id/songFragment2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/songFragment2"
+        android:name="com.example.gradfront.fragment.SongFragment2"
+        tools:layout="@layout/fragment_song2" />
+</navigation>

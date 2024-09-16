@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-            //selectedItemId = R.id.home
+            selectedItemId = R.id.home
         }
 
         // 데이터 수신

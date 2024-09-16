@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gradfront.SongAdapter
 import com.example.gradfront.data.SongRecommendResponse
+
+import com.example.gradfront.SpacingItem
+import com.example.gradfront.databinding.FragmentSong1Binding
+
 import com.example.gradfront.databinding.FragmentSong2Binding
 
 
@@ -22,6 +27,10 @@ class SongFragment2 : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentSong2Binding.inflate(layoutInflater, container, false)
+
+        //itemDecoration
+        binding.song2Rv.addItemDecoration(SpacingItem(20))
+
         return binding.root
     }
 
@@ -35,17 +44,15 @@ class SongFragment2 : Fragment() {
 
         if (trackList != null) {
 
-            binding.textView13
-
             // Adapter에 트랙 리스트 전달
             SongAdapter(trackList).also { adapter = it }
-            binding.recyclerViewTracks.adapter = adapter
+            binding.song2Rv.adapter = adapter
         }
 
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerViewTracks.apply {
+        binding.song2Rv.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
         }

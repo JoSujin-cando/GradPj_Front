@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "http://1.209.144.253/"
+    private const val BASE_URL = "http://172.30.1.45:8080/"
 
 //    // OkHttpClient에 타임아웃 설정 추가
 //    private val okHttpClient = OkHttpClient.Builder()

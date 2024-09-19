@@ -7,7 +7,7 @@
     android:background="@drawable/round">
 
     <ImageView
-        android:id="@+id/perfImg"
+        android:id="@+id/imageView4"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_marginStart="24dp"
@@ -19,24 +19,24 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/perfTitle"
+        android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="trackName"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/perfImg"
-        app:layout_constraintTop_toTopOf="@+id/perfImg" />
+        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     <TextView
-        android:id="@+id/bandLineUp"
+        android:id="@+id/textView28"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="artistName"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/perfImg"
-        app:layout_constraintTop_toBottomOf="@+id/perfTitle" />
+        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 </androidx.constraintlayout.widget.ConstraintLayout>

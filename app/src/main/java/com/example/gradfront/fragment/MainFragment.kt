@@ -2,14 +2,12 @@ package com.example.gradfront.fragment
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ClipDrawable.VERTICAL
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gradfront.*
 import com.example.gradfront.data.LiveData
@@ -19,6 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 
 class MainFragment : Fragment() {
@@ -49,7 +48,7 @@ class MainFragment : Fragment() {
         // RecyclerView 설정
         binding.mainRv.layoutManager = LinearLayoutManager(requireContext())
 
-        // *Retrofit을 통해 데이터를 불러옴*
+        /*Retrofit을 통해 데이터를 불러옴*/
         fetchLiveData()
 
         // MainAdapter에 클릭 리스너 설정
@@ -95,19 +94,19 @@ class MainFragment : Fragment() {
         })
     }
 
-    private fun getData(): List<ItemData> {
-        return listOf(
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉")
-        )
-    }
+//    private fun getData(): List<ItemData> {
+//        return listOf(
+//            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
+//            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
+//            ItemData(R.drawable.song, "Club CC", "시루봉"),
+//            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
+//            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
+//            ItemData(R.drawable.song, "Club CC", "시루봉"),
+//            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
+//            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
+//            ItemData(R.drawable.song, "Club CC", "시루봉")
+//        )
+//    }
 
     // 현재 날짜를 가져오는 함수
     private fun getCurrentDate(): String {

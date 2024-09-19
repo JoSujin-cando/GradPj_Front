@@ -3,9 +3,11 @@ package com.example.gradfront
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.example.gradfront.data.LiveData
 import com.example.gradfront.databinding.ItemRecyclerViewBinding
 
-class MyPageAdapter(private val dataList: List<ItemData>, private val MyPageClick: (ItemData) -> Unit) :
+class MyPageAdapter(private val dataList: List<LiveData>, private val MyPageClick: (LiveData) -> Unit) :
     RecyclerView.Adapter<MyPageAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: ItemRecyclerViewBinding) :
@@ -19,8 +21,8 @@ class MyPageAdapter(private val dataList: List<ItemData>, private val MyPageClic
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = dataList[position]
         holder.binding.textView20.text = item.title
-        holder.binding.textView28.text = item.subtitle
-        holder.binding.imageView4.setImageResource(item.imageResId)
+        holder.binding.textView28.text = item.bandLineup
+        holder.binding.imageView4.load(item.image)
 
         // 아이템 클릭 리스너 설정: RecyclerView 아이템 클릭 이벤트 처리
         holder.itemView.setOnClickListener {

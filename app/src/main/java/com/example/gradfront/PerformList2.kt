@@ -1,9 +1,16 @@
 package com.example.gradfront
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
+import com.example.gradfront.data.BookingRequest
+import com.example.gradfront.data.PayRequest
 import com.example.gradfront.databinding.ActivityPerformList2Binding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
@@ -24,7 +31,7 @@ class PerformList2 : AppCompatActivity() {
 
         //인원 수 버튼 클릭 시
         binding.minusBtn.setOnClickListener {
-            if(count!=0)
+            if (count != 0)
                 count--
             binding.num.setText(count.toString())
         }
@@ -34,7 +41,50 @@ class PerformList2 : AppCompatActivity() {
         }
         //결제하기 클릭 시 결제 서비스로 연결
         binding.payBtn.setOnClickListener {
+            val email = "haejipark88@gmail.com"
+            val liveId = 1
+            val ticketCount = 3
 
+            prepareBookingAndPayment(email, liveId, ticketCount)
+        }
+    }
+
+    private fun prepareBookingAndPayment(userEmail: String, liveId: Int, numberOfTickets: Int) {
+        val apiService: ApiService = ApiClient.getApiService()
+        CoroutineScope(Dispatchers.IO).launch {
+            // 1. 예약 생성
+            val bookingRequest = BookingRequest(userEmail, liveId, numberOfTickets)
+            val bookingResponse = apiService.createBooking(bookingRequest)
+
+            if (bookingResponse.isSuccessful) {
+                val bookingId = bookingResponse.body()?.id
+                Log.d("Booking", bookingId.toString())
+
+                // 2. 결제 준비 요청
+                if (bookingId != null) {
+                    val paymentResponse = apiService.readyPayment(PayRequest(bookingId))
+
+                    if (paymentResponse.isSuccessful) {
+                        val kakaoPayResponse = paymentResponse.body()
+
+                        // 3. Android App Scheme을 이용해 결제 페이지로 이동
+                        kakaoPayResponse?.next_redirect_mobile_url?.let {
+                            Log.d("KakaoPay", it)
+                            openWebPage(it)
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun openWebPage(url: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("KakaoPay", "Cannot open web page: $url", e)
         }
     }
 }

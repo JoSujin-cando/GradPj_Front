@@ -41,6 +41,14 @@ class MainActivity : AppCompatActivity() {
             selectedItemId = R.id.home
         }
 
+        binding.mainBtn.setOnClickListener{
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, MainFragment())
+                .commit()
+            // BottomNavigationView의 선택 상태 초기화
+            binding.mainBtmNav.menu.findItem(R.id.home).isChecked = true  // home으로 이동 시 선택 상태를 초기화
+        }
+
         // 데이터 수신
         val trackList = intent.getSerializableExtra("trackList") as? ArrayList<SongRecommendResponse>
 
@@ -53,12 +61,6 @@ class MainActivity : AppCompatActivity() {
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, fragment)
-                .commit()
-        }
-
-        binding.mainBtn.setOnClickListener{
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, MainFragment())
                 .commit()
         }
 

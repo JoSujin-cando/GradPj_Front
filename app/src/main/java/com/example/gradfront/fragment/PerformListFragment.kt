@@ -28,6 +28,7 @@ class PerformListFragment : Fragment() {
         // RecyclerView 설정
         binding.perfRv.layoutManager = LinearLayoutManager(requireContext())
 
+
         // MainAdapter에 클릭 리스너 설정
         val adapter = PerformListAdapter(getData()) { item ->
             // 아이템 클릭 시 PerformList2Activity로 데이터 전달

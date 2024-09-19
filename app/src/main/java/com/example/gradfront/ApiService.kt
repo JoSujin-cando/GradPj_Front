@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -14,4 +15,7 @@ interface ApiService {
 
     @GET("/spotify/recommend")
     fun getSongRecommendations(@Query("artistName") artistName: String): Call<List<SongRecommendResponse>>
+
+    @GET("/lives/today")
+    fun getLiveData(): Call<List<LiveData>>
 }

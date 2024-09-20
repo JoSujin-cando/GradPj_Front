@@ -2,7 +2,9 @@ package com.example.gradfront
 
 import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.BookingResponse
+import com.example.gradfront.data.KakaoLoginResponse
 import com.example.gradfront.data.KakaoPayReadyResponse
+import com.example.gradfront.data.KakaoTokenRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.data.SongRecommendResponse
 import retrofit2.Call

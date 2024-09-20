@@ -5,7 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import com.example.gradfront.data.KakaoLoginResponse
+import com.example.gradfront.data.KakaoTokenRequest
 import com.example.gradfront.databinding.ActivityLoginPageBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError

@@ -78,7 +78,13 @@ class MainFragment : Fragment() {
                         val intent = Intent(requireContext(), PerformList2::class.java).apply {
                             putExtra("title", item.title)
                             putExtra("subtitle", item.bandLineup)
-                            putExtra("imageResId", item.image) // 이미지 URL 전달
+                            putExtra("date", item.date)
+                            putExtra("place", item.club_id)
+                            putExtra("genre", item.genre)
+                            putExtra("price", item.advancePrice)
+                            putExtra("timetable", item.timetable)
+                            putExtra("notice", item.notice)
+                            putExtra("imageResId", item.image) // 이미지 URL 전달-수정해야 함
                         }
                         startActivity(intent)
                     }

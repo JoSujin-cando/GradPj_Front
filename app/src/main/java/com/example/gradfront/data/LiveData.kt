@@ -6,7 +6,7 @@ data class LiveData(
     val id: Long,
     val title: String,
     val bandLineup: String,
-    val date: LocalDate,
+    val date: String,
     val club_id: String,
     val genre: String,
     val advancePrice: Int,

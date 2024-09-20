@@ -55,6 +55,7 @@ class MyPage : AppCompatActivity() {
             override fun onResponse(call: Call<List<BookingResponse>>, response: Response<List<BookingResponse>>) {
                 if (response.isSuccessful) {
                     val bookingList = response.body() ?: emptyList()
+                    Log.d("mypage", bookingList.toString())
 
                     // 각 예약 정보에서 라이브 정보를 추가로 불러옴
                     val liveDataList = mutableListOf<Pair<BookingResponse, LiveData?>>()
@@ -71,7 +72,7 @@ class MyPage : AppCompatActivity() {
                                         val adapter = MyPageAdapter(liveDataList) { booking, live ->
                                             val intent = Intent(this@MyPage, BookingPage::class.java).apply {
                                                 putExtra("title", live?.title)
-                                                putExtra("bookingDate", booking.bookingDate.toString())
+                                                putExtra("bookingDate", booking.bookingDate)
                                                 putExtra("date", live?.date)
                                                 putExtra("place", live?.club_id)
                                                 putExtra("totalAmount", booking.totalAmount)

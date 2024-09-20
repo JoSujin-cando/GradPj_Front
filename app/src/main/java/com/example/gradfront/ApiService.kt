@@ -16,7 +16,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @POST("/auth/kakao")
+    @POST("/oauth/kakao")
     fun sendKakaoAccessToken(@Body request: KakaoTokenRequest): Call<KakaoLoginResponse>
 
     @GET("/spotify/recommend")

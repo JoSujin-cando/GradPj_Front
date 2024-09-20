@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gradfront.data.BookingResponse
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.databinding.ActivityMyPageBinding
 import com.kakao.sdk.user.UserApiClient
@@ -29,8 +30,7 @@ class MyPage : AppCompatActivity() {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
                     Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
-                }
-                else {
+                } else {
                     Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
                 }
             }
@@ -42,67 +42,64 @@ class MyPage : AppCompatActivity() {
         // *Retrofit을 통해 데이터를 불러옴*
         fetchLiveData()
 
-//        // MainAdapter에 클릭 리스너 설정
-//        val adapter = MyPageAdapter(getData()) { item ->
-//            // 아이템 클릭 시 BookingPage로 데이터 전달
-//            val intent = Intent(this, BookingPage::class.java).apply {
-//                putExtra("title", item.title)
-//                putExtra("subtitle", item.subtitle)
-//                putExtra("imageResId", item.imageResId)
-//            }
-//            startActivity(intent)
-//        }
-//        binding.myRv.adapter = adapter
-
         //itemDecoration
         binding.myRv.addItemDecoration(SpacingItem(20))
     }
 
     /**/
     private fun fetchLiveData() {
-        // API 호출
-        ApiClient.getApiService().getLiveData().enqueue(object : Callback<List<LiveData>> {
-            override fun onResponse(
-                call: Call<List<LiveData>>,
-                response: Response<List<LiveData>>
-            ) {
-                if (response.isSuccessful) {
-                    val liveDataList = response.body() ?: emptyList()
+        // 유저 ID는 로그인된 사용자 정보에서 받아오도록 설정
+        val userId: Long = 1 // 예시로 고정값, 실제로는 로그인된 사용자의 ID로 대체
 
-                    // Adapter에 데이터를 전달하여 RecyclerView에 표시
-                    val adapter = MyPageAdapter(liveDataList) { item ->
-                        // 아이템 클릭 시 PerformList2Activity로 데이터 전달
-                        val intent = Intent(this@MyPage, BookingPage::class.java).apply {
-                            putExtra("title", item.title)
-                            putExtra("subtitle", item.bandLineup)
-                            putExtra("imageResId", item.image) // 이미지 URL 전달
-                        }
-                        startActivity(intent)
+        ApiClient.getApiService().getUserBookings(userId).enqueue(object : Callback<List<BookingResponse>> {
+            override fun onResponse(call: Call<List<BookingResponse>>, response: Response<List<BookingResponse>>) {
+                if (response.isSuccessful) {
+                    val bookingList = response.body() ?: emptyList()
+
+                    // 각 예약 정보에서 라이브 정보를 추가로 불러옴
+                    val liveDataList = mutableListOf<Pair<BookingResponse, LiveData?>>()
+
+                    bookingList.forEach { booking ->
+                        ApiClient.getApiService().getLiveDataById(booking.liveId).enqueue(object : Callback<LiveData> {
+                            override fun onResponse(call: Call<LiveData>, liveResponse: Response<LiveData>) {
+                                if (liveResponse.isSuccessful) {
+                                    val liveData = liveResponse.body()
+                                    liveDataList.add(Pair(booking, liveData))
+
+                                    // Adapter에 데이터를 전달하여 RecyclerView에 표시
+                                    if (liveDataList.size == bookingList.size) {
+                                        val adapter = MyPageAdapter(liveDataList) { booking, live ->
+                                            val intent = Intent(this@MyPage, BookingPage::class.java).apply {
+                                                putExtra("title", live?.title)
+                                                putExtra("bookingDate", booking.bookingDate.toString())
+                                                putExtra("date", live?.date)
+                                                putExtra("place", live?.club_id)
+                                                putExtra("totalAmount", booking.totalAmount)
+                                                putExtra("timetable", live?.timetable)
+                                                putExtra("notice", live?.notice)
+                                                putExtra("imageResId", live?.image)
+                                                putExtra("numberOfTickets", booking.numberOfTickets)
+                                            }
+                                            startActivity(intent)
+                                        }
+                                        binding.myRv.adapter = adapter
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<LiveData>, t: Throwable) {
+                                Toast.makeText(this@MyPage, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
-                    binding.myRv.adapter = adapter
                 } else {
-                    Toast.makeText(this@MyPage, "Failed to load data", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@MyPage, "Failed to load booking data", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<List<LiveData>>, t: Throwable) {
+            override fun onFailure(call: Call<List<BookingResponse>>, t: Throwable) {
                 Toast.makeText(this@MyPage, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    private fun getData(): List<ItemData> {
-        return listOf(
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉")
-        )
     }
 }

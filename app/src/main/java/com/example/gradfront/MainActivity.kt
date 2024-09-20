@@ -42,12 +42,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 데이터 수신
+        val artistName = intent.getStringExtra("artistName")
         val trackList = intent.getSerializableExtra("trackList") as? ArrayList<SongRecommendResponse>
 
         if (trackList != null) {
             // Fragment에 데이터 전달
             val fragment = SongFragment2().apply {
                 arguments = Bundle().apply {
+                    putString("artistName", artistName)
                     putSerializable("trackList", trackList)
                 }
             }

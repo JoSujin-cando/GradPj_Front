@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.gradfront.data.LiveData
+import com.example.gradfront.data.LiveDataWithClub
 import com.example.gradfront.databinding.ItemRecyclerViewBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 // ViewHolder와 Adapter 정의: item_recycler_view.xml에 있는 뷰를 바인딩하고 각 아이템에 필요한 정보도
-class MainAdapter(private val dataList: List<LiveData>, private val MainClick: (LiveData) -> Unit) :
+class MainAdapter(private val dataList: List<LiveDataWithClub>, private val MainClick: (LiveDataWithClub) -> Unit) :
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     class MainViewHolder(val binding: ItemRecyclerViewBinding) : RecyclerView.ViewHolder(binding.root)  //뷰홀더
@@ -23,10 +24,10 @@ class MainAdapter(private val dataList: List<LiveData>, private val MainClick: (
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val item = dataList[position]
         /**/
-        if(item.date.toString()==getCurrentDate()){ //만약 공연 날짜가 오늘이면 MainRv 아이템(오늘 공연 리스트)에 정보 전달
-            holder.binding.textView20.text = item.title
-            holder.binding.textView28.text = item.bandLineup
-            holder.binding.imageView4.load(item.image)
+        if(item.liveData.date.toString()==getCurrentDate()){ //만약 공연 날짜가 오늘이면 MainRv 아이템(오늘 공연 리스트)에 정보 전달
+            holder.binding.textView20.text = item.liveData.title+" "+item.liveData.startTime
+            holder.binding.textView28.text = item.liveData.bandLineup
+            holder.binding.imageView4.load(item.liveData.image)
         }
 
         // 아이템 클릭 리스너 설정: RecyclerView 아이템 클릭 이벤트 처리
@@ -46,5 +47,3 @@ class MainAdapter(private val dataList: List<LiveData>, private val MainClick: (
         return dateFormat.format(date)
     }
 }
-
-data class ItemData(val imageResId: Int, val title: String, val subtitle: String)

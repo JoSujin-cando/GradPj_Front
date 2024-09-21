@@ -1,6 +1,7 @@
 package com.example.gradfront
 
 import com.example.gradfront.data.BookingResponse
+import com.example.gradfront.data.ClubData
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
 import retrofit2.Call
@@ -26,4 +27,7 @@ interface ApiService {
     // liveId를 기반으로 개별 라이브 정보 조회
     @GET("/live/{liveId}")
     fun getLiveDataById(@Path("liveId") liveId: Long): Call<LiveData>
+
+    @GET("/clubs/{id}")
+    fun getClubDataById(@Path("id") clubId: Long): Call<ClubData>
 }

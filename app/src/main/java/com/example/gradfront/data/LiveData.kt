@@ -1,13 +1,14 @@
 package com.example.gradfront.data
 
-import java.time.LocalDate
+import java.sql.Time
 
 data class LiveData(
     val id: Long,
     val title: String,
     val bandLineup: String,
     val date: String,
-    val club_id: String,
+    val club_id: Long,
+    val startTime: Time,
     val genre: String,
     val advancePrice: Int,
     val doorPrice: Int,

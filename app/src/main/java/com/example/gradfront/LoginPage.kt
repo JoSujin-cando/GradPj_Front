@@ -1,12 +1,16 @@
 package com.example.gradfront
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.gradfront.data.KakaoLoginResponse
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKeys
 import com.example.gradfront.data.KakaoTokenRequest
+import com.example.gradfront.data.UserResponse
 import com.example.gradfront.databinding.ActivityLoginPageBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -68,19 +72,6 @@ class LoginPage : AppCompatActivity() {
                     } else if (token != null) {
                         Log.e(TAG, "이메일 로그인 성공: ${token.accessToken}")
                         sendTokenToBackend(token.accessToken)  // 백엔드로 액세스 토큰 전송
-                        // 사용자 정보 요청 (기본)
-                        UserApiClient.instance.me { user, error ->
-                            if (error != null) {
-                                Log.e(TAG, "사용자 정보 요청 실패", error)
-                            }
-                            else if (user != null) {
-                                Log.i(TAG, "사용자 정보 요청 성공" +
-                                        "\n회원번호: ${user.id}" +
-                                        "\n이메일: ${user.kakaoAccount?.email}" +
-                                        "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
-                            }
-                        }
                         startActivity(intent)  // 토큰 전송 후에 액티비티 전환
                     }
                 })
@@ -94,14 +85,18 @@ class LoginPage : AppCompatActivity() {
         val apiService = ApiClient.getApiService()  // Retrofit API 클라이언트
         val call = apiService.sendKakaoAccessToken(KakaoTokenRequest(accessToken))
 
-        call.enqueue(object : Callback<KakaoLoginResponse> {
+        call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(
-                call: Call<KakaoLoginResponse>,
-                response: Response<KakaoLoginResponse>
+                call: Call<UserResponse>,
+                response: Response<UserResponse>
             ) {
                 if (response.isSuccessful) {
-                    val user = response.body()?.user
-                    Log.d("LoginActivity", "로그인 성공: ${user?.kakaoId}")
+                    val user = response.body()
+                    Log.d("LoginActivity", "로그인 성공: ${user?.id}")
+
+                    // EncryptedSharedPreferences를 사용하여 사용자 ID 저장
+                    saveUserId(user?.id ?: 0)
+
                     // 로그인 성공 후 메인 액티비티로 이동
                     startActivity(Intent(this@LoginPage, MainActivity::class.java))
                     finish()
@@ -110,9 +105,33 @@ class LoginPage : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<KakaoLoginResponse>, t: Throwable) {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 Log.e("LoginActivity", "로그인 실패: 네트워크 오류", t)
             }
         })
+    }
+
+    // 사용자 ID를 EncryptedSharedPreferences에 저장하는 함수
+    private fun saveUserId(userId: Long) {
+        // 암호화된 SharedPreferences 생성
+        val masterKey = MasterKey.Builder(applicationContext)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)  // 최신 AES256_GCM 방식 사용
+            .build()
+
+        // 암호화된 SharedPreferences 생성
+        val sharedPreferences = EncryptedSharedPreferences.create(
+            applicationContext,
+            "encrypted_prefs", // 저장될 파일 이름
+            masterKey, // 마스터 키
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        // 사용자 ID 저장
+        val editor = sharedPreferences.edit()
+        editor.putLong("userId", userId)
+        editor.apply()
+
+        Log.d("LoginActivity", "사용자 ID 저장됨: $userId")
     }
 }

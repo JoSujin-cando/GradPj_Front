@@ -23,7 +23,7 @@ class MyPageAdapter(private val dataList: List<Pair<BookingResponse, LiveData?>>
         val (booking, live) = dataList[position]
         holder.binding.textView20.text = booking.liveTitle
         holder.binding.textView28.text =  live?.bandLineup ?: "Unknown Lineup"
-        holder.binding.imageView4.load(live?.image)
+        holder.binding.imageView4.load(live?.image?: R.drawable.ic_launcher_background)
 
         // 아이템 클릭 리스너 설정: RecyclerView 아이템 클릭 이벤트 처리
         holder.itemView.setOnClickListener {

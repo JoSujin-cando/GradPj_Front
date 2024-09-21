@@ -14,6 +14,8 @@ import com.example.gradfront.databinding.FragmentPerformListBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PerformListFragment : Fragment() {
     lateinit var binding: FragmentPerformListBinding
@@ -67,6 +69,8 @@ class PerformListFragment : Fragment() {
                     val adapter = PerformListAdapter(liveDataList) { item ->
                         // 아이템 클릭 시 PerformList2Activity로 데이터 전달
                         val intent = Intent(requireContext(), PerformList2::class.java).apply {
+                            if (getCurrentDate().compareTo(item.date,true)<0) //이미 지난 날짜일 경우
+                                putExtra("check",1)
                             putExtra("title", item.title)
                             putExtra("subtitle", item.bandLineup)
                             putExtra("date", item.date)
@@ -90,6 +94,13 @@ class PerformListFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    /*onBindViewHolder의 if 문을 위해 MainFragment에서 가져옴: 현재 날짜를 가져오는 함수*/
+    private fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = Date()
+        return dateFormat.format(date)
     }
 
     private fun getData(): List<ItemData> {

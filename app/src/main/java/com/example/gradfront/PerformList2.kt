@@ -41,19 +41,19 @@ class PerformList2 : AppCompatActivity() {
         }
         //결제하기 클릭 시 결제 서비스로 연결
         binding.payBtn.setOnClickListener {
-            val email = "haejipark88@gmail.com"
+            val userId : Long = 1
             val liveId = 1
             val ticketCount = 3
 
-            prepareBookingAndPayment(email, liveId, ticketCount)
+            prepareBookingAndPayment(userId, liveId, ticketCount)
         }
     }
 
-    private fun prepareBookingAndPayment(userEmail: String, liveId: Int, numberOfTickets: Int) {
+    private fun prepareBookingAndPayment(userId: Long, liveId: Int, numberOfTickets: Int) {
         val apiService: ApiService = ApiClient.getApiService()
         CoroutineScope(Dispatchers.IO).launch {
             // 1. 예약 생성
-            val bookingRequest = BookingRequest(userEmail, liveId, numberOfTickets)
+            val bookingRequest = BookingRequest(userId, liveId, numberOfTickets)
             val bookingResponse = apiService.createBooking(bookingRequest)
 
             if (bookingResponse.isSuccessful) {

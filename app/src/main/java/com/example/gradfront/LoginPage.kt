@@ -101,7 +101,7 @@ class LoginPage : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val user = response.body()?.user
-                    Log.d("LoginActivity", "로그인 성공: ${user?.email}")
+                    Log.d("LoginActivity", "로그인 성공: ${user?.kakaoId}")
                     // 로그인 성공 후 메인 액티비티로 이동
                     startActivity(Intent(this@LoginPage, MainActivity::class.java))
                     finish()

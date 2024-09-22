@@ -63,7 +63,6 @@
                     android:scheme="kakao6aca60cf485fcdb138a0802846166ae7" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

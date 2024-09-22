@@ -5,12 +5,15 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
@@ -69,7 +72,7 @@ class PerformList2 : AppCompatActivity() {
 
                         // 3. Android App Scheme을 이용해 결제 페이지로 이동
                         kakaoPayResponse?.next_redirect_mobile_url?.let {
-                            Log.d("KakaoPay", it)
+                            Log.d("KakaoPaying", it)
                             openWebPage(it)
                         }
 
@@ -80,11 +83,15 @@ class PerformList2 : AppCompatActivity() {
     }
 
     private fun openWebPage(url: String) {
+        val newUrl = url.replace("localhost", "172.30.1.21")
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(newUrl))
             startActivity(intent)
         } catch (e: Exception) {
-            Log.e("KakaoPay", "Cannot open web page: $url", e)
+            Log.e("KakaoPay", "Cannot open web page: $newUrl", e)
         }
     }
+
 }
+
+

@@ -37,8 +37,6 @@ class LoginPage : AppCompatActivity() {
         val binding = ActivityLoginPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val intent = Intent(this, MainActivity::class.java)
-
         binding.loginBtn.setOnClickListener {
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
                 // 카카오톡 로그인
@@ -62,7 +60,6 @@ class LoginPage : AppCompatActivity() {
                     else if (token != null) {
                         Log.e(TAG, "로그인 성공 ${token.accessToken}")
                         sendTokenToBackend(token.accessToken)  // 백엔드로 액세스 토큰 전송
-                        startActivity(intent)
                     }
                 }
             } else {
@@ -72,7 +69,6 @@ class LoginPage : AppCompatActivity() {
                     } else if (token != null) {
                         Log.e(TAG, "이메일 로그인 성공: ${token.accessToken}")
                         sendTokenToBackend(token.accessToken)  // 백엔드로 액세스 토큰 전송
-                        startActivity(intent)  // 토큰 전송 후에 액티비티 전환
                     }
                 })
             }

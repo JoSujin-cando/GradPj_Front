@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.databinding.ActivityPerformList2Binding
@@ -42,11 +45,12 @@ class PerformList2 : AppCompatActivity() {
             count++
             binding.num.setText(count.toString())
         }
+
         //결제하기 클릭 시 결제 서비스로 연결
         binding.payBtn.setOnClickListener {
-            val userId : Long = 1
+            val userId = getUserId(applicationContext)
             val liveId = 1
-            val ticketCount = 3
+            val ticketCount = count
 
             prepareBookingAndPayment(userId, liveId, ticketCount)
         }
@@ -92,6 +96,25 @@ class PerformList2 : AppCompatActivity() {
         }
     }
 
+    // 사용자 ID 불러오기 함수
+    private fun getUserId(context: Context): Long {
+        // 최신 MasterKey 생성
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        // 암호화된 SharedPreferences 생성
+        val sharedPreferences = EncryptedSharedPreferences.create(
+            context,
+            "encrypted_prefs", // 저장된 파일 이름
+            masterKey, // 마스터 키
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        // 저장된 사용자 ID를 불러옴 (없으면 기본값 0L 반환)
+        return sharedPreferences.getLong("userId", 0L)
+    }
 }
 
 

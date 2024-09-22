@@ -87,12 +87,11 @@ class PerformList2 : AppCompatActivity() {
     }
 
     private fun openWebPage(url: String) {
-        val newUrl = url.replace("localhost", "172.30.1.21")
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(newUrl))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Log.e("KakaoPay", "Cannot open web page: $newUrl", e)
+            Log.e("KakaoPay", "Cannot open web page: $url", e)
         }
     }
 

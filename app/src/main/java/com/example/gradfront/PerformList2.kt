@@ -24,6 +24,7 @@ class PerformList2 : AppCompatActivity() {
         val notice = intent.getStringExtra("notice")
         val imageResId = intent.getIntExtra("imageResId", R.drawable.ic_launcher_background) //Img 수정해야 함
         val check = intent.getIntExtra("check",0)
+        val liveId = intent.getLongExtra("liveId",1)
 
         // 받은 데이터를 UI에 표시
         binding.PerfTitle.text = "공연명: $title"

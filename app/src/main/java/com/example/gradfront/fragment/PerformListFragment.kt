@@ -122,10 +122,12 @@ class PerformListFragment : Fragment() {
                 putExtra("date", item.liveData.date)
                 putExtra("place", item.clubName)
                 putExtra("genre", item.liveData.genre)
-                putExtra("price", item.liveData.advancePrice)
+                val price = item.liveData.advancePrice ?: 0.0
+                putExtra("price", price)
                 putExtra("timetable", item.liveData.timetable)
                 putExtra("notice", item.liveData.notice)
                 putExtra("imageResId", item.liveData.image) // 이미지 URL 전달-수정해야 함
+                putExtra("liveId", item.liveData.id)
             }
             startActivity(intent)
         }

@@ -11,5 +11,6 @@ data class BookingResponse(
     val numberOfTickets: Int,   // 예매한 티켓 수
     val totalAmount: Int,       // 예매 가격
     val userName: String,       // 유저 이름
-    val userEmail: String       // 유저 이메일
+    val userEmail: String,       // 유저 이메일
+    val status: BookingStatus
 )

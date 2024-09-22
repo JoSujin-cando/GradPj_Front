@@ -130,6 +130,7 @@ class MainFragment : Fragment() {
                 putExtra("timetable", item.liveData.timetable)
                 putExtra("notice", item.liveData.notice)
                 putExtra("imageResId", item.liveData.image) // 이미지 URL 전달
+                putExtra("liveId", item.liveData.id)
             }
             startActivity(intent)
         }

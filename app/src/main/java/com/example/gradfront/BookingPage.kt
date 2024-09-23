@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import coil.load
+import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.databinding.ActivityBookingPageBinding
 import kotlinx.coroutines.CoroutineScope
@@ -43,32 +44,29 @@ class BookingPage : AppCompatActivity() {
         // 결제 취소
         binding.cancelBtn.setOnClickListener {
             val apiService = ApiClient.getApiService()
-            val payRequest = PayRequest(bookingId)
 
-//            // 코루틴을 직접 실행
-//            CoroutineScope(Dispatchers.IO).launch {
-//                try {
-//                    // Retrofit을 사용하여 네트워크 요청
-//                    val response = apiService.cancelPayment(payRequest)
-//
-//                    if (response.isSuccessful) {
-//                        // 응답이 성공한 경우
-//                        val cancelResponse = response.body() // 성공한 응답 본문
-//                        cancelResponse?.let {
-//                            Log.d("PaymentCancel", "결제 취소 성공: ${it.message}")
-//                        }
-//                    } else {
-//                        // 응답이 실패한 경우
-//                        Log.d(
-//                            "PaymentCancel",
-//                            "결제 취소 실패: ${response.code()} - ${response.message()}"
-//                        )
-//                    }
-//                } catch (e: Exception) {
-//                    // 네트워크 요청 중 예외 발생 시
-//                    Log.e("PaymentCancel", "결제 취소 중 오류 발생", e)
-//                }
-//            }
+            // 코루틴을 직접 실행
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    // Retrofit을 사용하여 네트워크 요청
+                    val payRequest = PayRequest(bookingId)
+                    val cancelPayment = apiService.cancelPayment(payRequest)
+
+                    if (cancelPayment.isSuccessful) {
+                        // 응답이 성공한 경우
+                        val cancelResponse = cancelPayment.body() // 성공한 응답 본문
+                        cancelResponse?.let {
+                            Log.d("PaymentCancel", "결제 취소 성공")
+                        }
+                    } else {
+                        // 응답이 실패한 경우
+                        Log.d("PaymentCancel", "결제 취소 실패")
+                    }
+                } catch (e: Exception) {
+                    // 네트워크 요청 중 예외 발생 시
+                    Log.e("PaymentCancel", "결제 취소 중 오류 발생", e)
+                }
+            }
         }
     }
 }

@@ -33,8 +33,8 @@ interface ApiService {
     @POST("payment/ready")
     suspend fun readyPayment(@Body request: PayRequest): Response<KakaoPayReadyResponse>
 
-    @POST("/cancel")
-    fun cancelPayment(@Body payRequest: PayRequest): Call<KakaoPayCancelResponse>
+    @POST("payment/cancel")
+    suspend fun cancelPayment(@Body payRequest: PayRequest): Response<KakaoPayCancelResponse>
 
     @GET("/lives/today")
     fun getLiveData(): Call<List<LiveData>>

@@ -18,7 +18,7 @@ import com.example.gradfront.fragment.SongFragment1
 import com.example.gradfront.fragment.SongFragment2
 
 class MainActivity : AppCompatActivity() {
-
+    var waitTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,6 +49,14 @@ class MainActivity : AppCompatActivity() {
             selectedItemId = R.id.home
         }
 
+        binding.mainBtn.setOnClickListener{
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, MainFragment())
+                .commit()
+            // BottomNavigationView의 선택 상태 초기화
+            binding.mainBtmNav.menu.findItem(R.id.home).isChecked = true  // home으로 이동 시 선택 상태를 초기화
+        }
+
         // 데이터 수신
         val artistName = intent.getStringExtra("artistName")
         val trackList: ArrayList<SongRecommendResponse>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -67,12 +75,6 @@ class MainActivity : AppCompatActivity() {
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, fragment)
-                .commit()
-        }
-
-        binding.mainBtn.setOnClickListener{
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, MainFragment())
                 .commit()
         }
 
@@ -100,5 +102,13 @@ class MainActivity : AppCompatActivity() {
 
         // 저장된 사용자 ID를 불러옴 (없으면 기본값 0L 반환)
         return sharedPreferences.getLong("userId", 0L)
+
+    override fun onBackPressed() {
+        if(System.currentTimeMillis() - waitTime >=1500 ) {
+            waitTime = System.currentTimeMillis()
+        } else {
+            finish() // 액티비티 종료
+        }
+
     }
 }

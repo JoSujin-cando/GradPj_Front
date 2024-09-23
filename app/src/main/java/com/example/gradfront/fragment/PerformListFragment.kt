@@ -103,7 +103,7 @@ class PerformListFragment : Fragment() {
         val adapter = PerformListAdapter(liveDataList) { item ->
             // PerformList2Activity로 이동할 때 클럽 이름도 함께 전달
             val intent = Intent(requireContext(), PerformList2::class.java).apply {
-                if (getCurrentDate().compareTo(item.liveData.date,true)>0) //이미 지난 날짜인 경우(왼쪽이 크면 1, 작으면 -1)
+                if (getCurrentDate().compareTo(item.liveData.date,true)>=0) //이미 지난 날짜인 경우(왼쪽이 크면 1, 작으면 -1)
                     putExtra("check",1)
                 putExtra("title", item.liveData.title)
                 putExtra("subtitle", item.liveData.bandLineup)

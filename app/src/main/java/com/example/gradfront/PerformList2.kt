@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,8 @@ import com.example.gradfront.data.PayRequest
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import coil.load
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
@@ -24,10 +27,23 @@ import kotlinx.coroutines.withContext
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityPerformList2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // resultLauncher 초기화
+        resultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // PerformListActivity에 갱신 신호를 보냄
+                setResult(Activity.RESULT_OK)
+                finish() // PerformList2 액티비티 종료
+            }
+        }
 
         // Intent로부터 데이터 받기
         val title = intent.getStringExtra("title")
@@ -108,6 +124,9 @@ class PerformList2 : AppCompatActivity() {
                         // 3. 결제 페이지로 이동
                         kakaoPayResponse?.next_redirect_mobile_url?.let {
                             Log.d("KakaoPaying", it)
+
+                            // 결제 성공 후 PerformListActivity로 돌아가도록 결과 설정
+                            setResult(Activity.RESULT_OK)
                             openWebPage(it)
                         }
                     }
@@ -119,7 +138,7 @@ class PerformList2 : AppCompatActivity() {
     private fun openWebPage(url: String) {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            resultLauncher.launch(intent) // 결제 완료 후 다시 되돌아오게 함
         } catch (e: Exception) {
             Log.e("KakaoPay", "Cannot open web page: $url", e)
         }

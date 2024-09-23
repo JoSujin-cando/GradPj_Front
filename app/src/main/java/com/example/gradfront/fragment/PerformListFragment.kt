@@ -45,6 +45,12 @@ class PerformListFragment : Fragment() {
         binding.perfRv.addItemDecoration(SpacingItem(20))
     }
 
+    override fun onResume() {
+        super.onResume()
+        // PerformList2Activity에서 결제가 완료된 후 다시 돌아왔을 때 데이터를 새로고침
+        fetchLiveData()
+    }
+
     /**/
     private fun fetchLiveData() {
         // API 호출

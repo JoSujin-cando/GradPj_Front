@@ -2,8 +2,14 @@ package com.example.gradfront
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import coil.load
+import com.example.gradfront.data.PayRequest
 import com.example.gradfront.databinding.ActivityBookingPageBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BookingPage : AppCompatActivity() {
     lateinit var binding: ActivityBookingPageBinding
@@ -13,6 +19,7 @@ class BookingPage : AppCompatActivity() {
         setContentView(binding.root)
 
         // 전달받은 예약 정보와 라이브 정보 표시(intent로부터 데이터 받기)
+        val bookingId = intent.getLongExtra("bookingId", 0)
         val title = intent.getStringExtra("title")
         val bookingDate = intent.getStringExtra("bookingDate")
         val date = intent.getStringExtra("date")
@@ -32,5 +39,36 @@ class BookingPage : AppCompatActivity() {
         binding.bookTimeTable.text = "$timetable"
         binding.bookNotice.text = "$notice"
         binding.imageView.load(imageResId)
+
+        // 결제 취소
+        binding.cancelBtn.setOnClickListener {
+            val apiService = ApiClient.getApiService()
+            val payRequest = PayRequest(bookingId)
+
+//            // 코루틴을 직접 실행
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    // Retrofit을 사용하여 네트워크 요청
+//                    val response = apiService.cancelPayment(payRequest)
+//
+//                    if (response.isSuccessful) {
+//                        // 응답이 성공한 경우
+//                        val cancelResponse = response.body() // 성공한 응답 본문
+//                        cancelResponse?.let {
+//                            Log.d("PaymentCancel", "결제 취소 성공: ${it.message}")
+//                        }
+//                    } else {
+//                        // 응답이 실패한 경우
+//                        Log.d(
+//                            "PaymentCancel",
+//                            "결제 취소 실패: ${response.code()} - ${response.message()}"
+//                        )
+//                    }
+//                } catch (e: Exception) {
+//                    // 네트워크 요청 중 예외 발생 시
+//                    Log.e("PaymentCancel", "결제 취소 중 오류 발생", e)
+//                }
+//            }
+        }
     }
 }

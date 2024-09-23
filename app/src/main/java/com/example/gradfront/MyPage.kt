@@ -42,9 +42,9 @@ class MyPage : AppCompatActivity() {
                 }
             }
         }
+
         // RecyclerView 설정
         binding.myRv.layoutManager = LinearLayoutManager(this)
-
         binding.myRv.addItemDecoration(SpacingItem(20))
 
         // *Retrofit을 통해 데이터를 불러옴*
@@ -131,6 +131,7 @@ class MyPage : AppCompatActivity() {
     private fun setUpRecyclerView(liveDataList: List<Pair<BookingResponse, LiveDataWithClub?>>) {
         val adapter = MyPageAdapter(liveDataList) { booking, live ->
             val intent = Intent(this@MyPage, BookingPage::class.java).apply {
+                putExtra("bookingId", booking.id)
                 putExtra("title", live?.liveData?.title)
                 putExtra("bookingDate", booking.bookingDate)
                 putExtra("date", live?.liveData?.date)

@@ -6,6 +6,7 @@ import com.example.gradfront.data.KakaoPayReadyResponse
 import com.example.gradfront.data.KakaoTokenRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.data.ClubData
+import com.example.gradfront.data.KakaoPayCancelResponse
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
 import com.example.gradfront.data.UserResponse
@@ -31,6 +32,9 @@ interface ApiService {
 
     @POST("payment/ready")
     suspend fun readyPayment(@Body request: PayRequest): Response<KakaoPayReadyResponse>
+
+    @POST("/cancel")
+    fun cancelPayment(@Body payRequest: PayRequest): Call<KakaoPayCancelResponse>
 
     @GET("/lives/today")
     fun getLiveData(): Call<List<LiveData>>

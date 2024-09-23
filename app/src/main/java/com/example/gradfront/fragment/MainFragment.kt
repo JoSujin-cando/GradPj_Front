@@ -81,7 +81,7 @@ class MainFragment : Fragment() {
 
 
                     liveDataList.forEach { liveData ->
-                        ApiClient.getApiService().getClubDataById(liveData.club_id).enqueue(object : Callback<ClubData> {
+                        ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
                             override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
                                 if (clubResponse.isSuccessful) {
                                     val club = clubResponse.body()
@@ -103,7 +103,7 @@ class MainFragment : Fragment() {
                     }
 
                     // club_id를 기반으로 마커 색상을 변경
-                    val markerIds = liveDataList.map { liveData -> liveData.club_id }
+                    val markerIds = liveDataList.map { liveData -> liveData.clubId }
                     changeMarkerColors(markerIds)
 
                 } else {

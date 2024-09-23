@@ -2,6 +2,7 @@ package com.example.gradfront.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -79,10 +80,11 @@ class PerformListFragment : Fragment() {
 //                    binding.perfRv.adapter = adapter
 
                     liveDataList.forEach { liveData ->
-                        ApiClient.getApiService().getClubDataById(liveData.club_id).enqueue(object : Callback<ClubData> {
+                        ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
                             override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
                                 if (clubResponse.isSuccessful) {
                                     val club = clubResponse.body()
+                                    Log.d("공연리스트", club.toString())
                                     if (club != null) {
                                         // 클럽 데이터를 포함하는 새로운 데이터 클래스를 사용
                                         updatedLiveDataList.add(LiveDataWithClub(liveData, club.clubName))

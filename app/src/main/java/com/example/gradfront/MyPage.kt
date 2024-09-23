@@ -97,7 +97,7 @@ class MyPage : AppCompatActivity() {
     }
 
     private fun fetchClubData(booking: BookingResponse, liveData: LiveData, liveDataList: MutableList<Pair<BookingResponse, LiveDataWithClub?>>, onComplete: () -> Unit) {
-        ApiClient.getApiService().getClubDataById(liveData.club_id).enqueue(object : Callback<ClubData> {
+        ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
             override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
                 val clubName = if (clubResponse.isSuccessful) {
                     clubResponse.body()?.clubName ?: "Unknown Club"
@@ -132,7 +132,7 @@ class MyPage : AppCompatActivity() {
                 putExtra("title", live?.liveData?.title)
                 putExtra("bookingDate", booking.bookingDate)
                 putExtra("date", live?.liveData?.date)
-                putExtra("place", live?.liveData?.club_id)
+                putExtra("place", live?.liveData?.clubId)
                 putExtra("totalAmount", booking.totalAmount)
                 putExtra("timetable", live?.liveData?.timetable)
                 putExtra("notice", live?.liveData?.notice)

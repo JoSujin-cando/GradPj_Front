@@ -54,22 +54,22 @@ class PerformList2 : AppCompatActivity() {
         //인원 수 버튼 클릭 시
         binding.minusBtn.setOnClickListener {
             if (check == 1) {
-                binding.minusBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
-            } else {
                 if (count != 0)
                     count--
                 binding.num.setText(count.toString())
+            } else {
+                binding.minusBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.plusBtn.setOnClickListener {
             if (check == 1) {
-                binding.plusBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
-            } else {
                 count++
                 binding.num.setText(count.toString())
+            } else {
+                binding.plusBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
 

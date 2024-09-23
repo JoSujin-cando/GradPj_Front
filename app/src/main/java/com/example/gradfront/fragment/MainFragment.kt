@@ -61,25 +61,6 @@ class MainFragment : Fragment() {
                     // 클럽 데이터를 각 라이브에 맞춰 가져오고 리사이클러뷰에 전달
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
 
-//                    // Adapter에 데이터를 전달하여 RecyclerView에 표시
-//                    val adapter = MainAdapter(liveDataList) { item ->
-//                        // 아이템 클릭 시 PerformList2Activity로 데이터 전달
-//                        val intent = Intent(requireContext(), PerformList2::class.java).apply {
-//                            putExtra("title", item.title)
-//                            putExtra("subtitle", item.bandLineup)
-//                            putExtra("date", item.date)
-//                            putExtra("place", item.club_id)
-//                            putExtra("genre", item.genre)
-//                            putExtra("price", item.advancePrice)
-//                            putExtra("timetable", item.timetable)
-//                            putExtra("notice", item.notice)
-//                            putExtra("imageResId", item.image) // 이미지 URL 전달-수정해야 함
-//                        }
-//                        startActivity(intent)
-//                    }
-//                    binding.mainRv.adapter = adapter
-
-
                     liveDataList.forEach { liveData ->
                         ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
                             override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
@@ -143,14 +124,6 @@ class MainFragment : Fragment() {
         val date = Date()
         return dateFormat.format(date)
     }
-
-    // 백엔드에서 마커 ID를 가져오는 함수 (예시로 임의의 ID 리스트 반환)
-//    private fun get
-//    MarkerIdsFromBackend(): List<Int> {
-//        // 실제로는 백엔드와 통신하여 마커 ID 리스트를 받아오는 로직이 필요함
-//        // 예시로 마커 ID가 1, 3일 경우를 가정
-//        return listOf(1, 3)
-//    }
 
     // 마커 ID에 따라 해당하는 버튼의 색상 변경
     private fun changeMarkerColors(markerIds: List<Long>) {

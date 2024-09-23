@@ -76,14 +76,14 @@ class PerformList2 : AppCompatActivity() {
         //결제하기 클릭 시 결제 서비스로 연결
         binding.payBtn.setOnClickListener {
             if (check == 1) {
-                binding.payBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
-            } else {
                 //버튼 클릭 시 결제 서빅스로 연결
                 val userId = getUserId(applicationContext)
                 val liveId = 1
                 val ticketCount = count
                 prepareBookingAndPayment(userId, liveId, ticketCount)
+            } else {
+                binding.payBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
     }

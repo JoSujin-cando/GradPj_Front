@@ -15,6 +15,7 @@ import com.example.gradfront.data.PayRequest
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import coil.load
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,11 +34,10 @@ class PerformList2 : AppCompatActivity() {
         val date = intent.getStringExtra("date")
         val place = intent.getStringExtra("place")
         val genre = intent.getStringExtra("genre")
-        val price = intent.getStringExtra("price")
+        val price = intent.getIntExtra("price",0)
         val timetable = intent.getStringExtra("timetable")
         val notice = intent.getStringExtra("notice")
-        val imageResId =
-            intent.getIntExtra("imageResId", R.drawable.ic_launcher_background) //Img 수정해야 함
+        val imageResId = intent.getStringExtra("imageResId") //Img 수정해야 함
         val check = intent.getIntExtra("check", 0)
         val liveId = intent.getLongExtra("liveId", 1)
 
@@ -49,7 +49,7 @@ class PerformList2 : AppCompatActivity() {
         binding.price.text = "예매가: $price"
         binding.TimeTable.text = "$timetable"
         binding.notice.text = "$notice"
-        binding.imageView2.setImageResource(imageResId)
+        binding.imageView2.load(imageResId)
 
         //인원 수 버튼 클릭 시
         binding.minusBtn.setOnClickListener {

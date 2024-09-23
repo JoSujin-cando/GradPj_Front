@@ -14,11 +14,12 @@ import com.example.gradfront.fragment.SongFragment1
 import com.example.gradfront.fragment.SongFragment2
 
 class MainActivity : AppCompatActivity() {
-
+    var waitTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         //내비게이션 바 코드
         supportFragmentManager.beginTransaction().replace(R.id.main_frm, MainFragment()).commitAllowingStateLoss()
@@ -70,4 +71,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if(System.currentTimeMillis() - waitTime >=1500 ) {
+            waitTime = System.currentTimeMillis()
+        } else {
+            finish() // 액티비티 종료
+        }
+    }
 }

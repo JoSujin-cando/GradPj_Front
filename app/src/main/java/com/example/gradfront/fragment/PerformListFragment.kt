@@ -59,26 +59,6 @@ class PerformListFragment : Fragment() {
                     // 클럽 데이터를 각 라이브에 맞춰 가져오고 리사이클러뷰에 전달
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
 
-//                    // Adapter에 데이터를 전달하여 RecyclerView에 표시
-//                    val adapter = PerformListAdapter(liveDataList) { item ->
-//                        // 아이템 클릭 시 PerformList2Activity로 데이터 전달
-//                        val intent = Intent(requireContext(), PerformList2::class.java).apply {
-//                            if (getCurrentDate().compareTo(item.date,true)<0) //이미 지난 날짜일 경우
-//                                putExtra("check",1)
-//                            putExtra("title", item.title)
-//                            putExtra("subtitle", item.bandLineup)
-//                            putExtra("date", item.date)
-//                            putExtra("place", item.club_id)
-//                            putExtra("genre", item.genre)
-//                            putExtra("price", item.advancePrice)
-//                            putExtra("timetable", item.timetable)
-//                            putExtra("notice", item.notice)
-//                            putExtra("imageResId", item.image) // 이미지 URL 전달-수정해야 함
-//                        }
-//                        startActivity(intent)
-//                    }
-//                    binding.perfRv.adapter = adapter
-
                     liveDataList.forEach { liveData ->
                         ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
                             override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
@@ -117,7 +97,7 @@ class PerformListFragment : Fragment() {
         val adapter = PerformListAdapter(liveDataList) { item ->
             // PerformList2Activity로 이동할 때 클럽 이름도 함께 전달
             val intent = Intent(requireContext(), PerformList2::class.java).apply {
-                if (getCurrentDate().compareTo(item.liveData.date,true)<0) //이미 지난 날짜일 경우
+                if (getCurrentDate().compareTo(item.liveData.date,true)<0) //이미 지난 날짜가 아닌 경우
                     putExtra("check",1)
                 putExtra("title", item.liveData.title)
                 putExtra("subtitle", item.liveData.bandLineup)

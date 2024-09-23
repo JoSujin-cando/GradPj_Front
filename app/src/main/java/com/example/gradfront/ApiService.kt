@@ -42,7 +42,7 @@ interface ApiService {
     fun getUserBookings(@Path("userId") userId: Long): Call<List<BookingResponse>>
 
     // liveId를 기반으로 개별 라이브 정보 조회
-    @GET("/live/{liveId}")
+    @GET("/lives/{liveId}")
     fun getLiveDataById(@Path("liveId") liveId: Long): Call<LiveData>
 
     @GET("/clubs/{id}")

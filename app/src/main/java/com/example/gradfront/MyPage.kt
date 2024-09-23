@@ -78,6 +78,7 @@ class MyPage : AppCompatActivity() {
             ApiClient.getApiService().getLiveDataById(booking.liveId).enqueue(object : Callback<LiveData> {
                 override fun onResponse(call: Call<LiveData>, liveResponse: Response<LiveData>) {
                     if (liveResponse.isSuccessful) {
+                        Log.d("라이브데이터", liveResponse.body().toString())
                         liveResponse.body()?.let { liveData ->
                             fetchClubData(booking, liveData, liveDataList) {
                                 completedRequests++
@@ -85,6 +86,7 @@ class MyPage : AppCompatActivity() {
                             }
                         } ?: handleFailedRequest(booking, liveDataList) { completedRequests++ }
                     } else {
+                        Log.d("라이브데이터", "라이브 데이터 오류")
                         handleFailedRequest(booking, liveDataList) { completedRequests++ }
                     }
                 }

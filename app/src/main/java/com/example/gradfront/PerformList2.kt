@@ -105,7 +105,7 @@ class PerformList2 : AppCompatActivity() {
                     if (paymentResponse.isSuccessful) {
                         val kakaoPayResponse = paymentResponse.body()
 
-                        // 3. Android App Scheme을 이용해 결제 페이지로 이동
+                        // 3. 결제 페이지로 이동
                         kakaoPayResponse?.next_redirect_mobile_url?.let {
                             Log.d("KakaoPaying", it)
                             openWebPage(it)

@@ -8,12 +8,13 @@ data class LiveData(
     val bandLineup: String,
     val date: String,
     val clubId: Long,
-    val startTime: Time,
     val genre: String,
     val advancePrice: Int,
     val doorPrice: Int,
     val notice: String,
     val timetable: String,
-    val image: String // 이미지 경로
+    val image: String, // 이미지 경로
+    val remainNumOfSeats: Int,
+    val startTime: Time
 )
 

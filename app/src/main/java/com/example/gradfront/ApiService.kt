@@ -5,7 +5,6 @@ import com.example.gradfront.data.BookingResponse
 import com.example.gradfront.data.KakaoPayReadyResponse
 import com.example.gradfront.data.KakaoTokenRequest
 import com.example.gradfront.data.PayRequest
-import com.example.gradfront.data.BookingResponse
 import com.example.gradfront.data.ClubData
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse

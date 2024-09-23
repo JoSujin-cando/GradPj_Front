@@ -6,8 +6,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.gradfront.data.SongRecommendResponse
@@ -29,16 +27,18 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "불러온 사용자 ID: $userId")
 
         //내비게이션 바 코드
-        supportFragmentManager.beginTransaction().replace(R.id.main_frm, MainFragment()).commitAllowingStateLoss()
-        binding.mainBtmNav.run{
-            setOnItemSelectedListener { item->
-                when(item.itemId){
-                    R.id.perf->{
+        supportFragmentManager.beginTransaction().replace(R.id.main_frm, MainFragment())
+            .commitAllowingStateLoss()
+        binding.mainBtmNav.run {
+            setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.perf -> {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.main_frm, PerformListFragment())
                             .commit()
                     }
-                    R.id.song->{
+
+                    R.id.song -> {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.main_frm, SongFragment1())
                             .commit()
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             selectedItemId = R.id.home
         }
 
-        binding.mainBtn.setOnClickListener{
+        binding.mainBtn.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, MainFragment())
                 .commit()
@@ -59,11 +59,15 @@ class MainActivity : AppCompatActivity() {
 
         // 데이터 수신
         val artistName = intent.getStringExtra("artistName")
-        val trackList: ArrayList<SongRecommendResponse>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra("trackList", ArrayList::class.java) as? ArrayList<SongRecommendResponse>
-        } else {
-            intent.getSerializableExtra("trackList") as? ArrayList<SongRecommendResponse>
-        }
+        val trackList: ArrayList<SongRecommendResponse>? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getSerializableExtra(
+                    "trackList",
+                    ArrayList::class.java
+                ) as? ArrayList<SongRecommendResponse>
+            } else {
+                intent.getSerializableExtra("trackList") as? ArrayList<SongRecommendResponse>
+            }
 
         if (trackList != null) {
             // Fragment에 데이터 전달
@@ -102,13 +106,13 @@ class MainActivity : AppCompatActivity() {
 
         // 저장된 사용자 ID를 불러옴 (없으면 기본값 0L 반환)
         return sharedPreferences.getLong("userId", 0L)
+    }
 
     override fun onBackPressed() {
-        if(System.currentTimeMillis() - waitTime >=1500 ) {
+        if (System.currentTimeMillis() - waitTime >= 1500) {
             waitTime = System.currentTimeMillis()
         } else {
             finish() // 액티비티 종료
         }
-
     }
 }

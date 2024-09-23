@@ -179,21 +179,6 @@ class MyPage : AppCompatActivity() {
         }
     }
 
-    private fun getData(): List<ItemData> {
-        return listOf(
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉"),
-            ItemData(R.drawable.diskimg, "Club FF", "행로난"),
-            ItemData(R.drawable.ic_baseline_account_circle_24, "Club BB", "몽롱이"),
-            ItemData(R.drawable.song, "Club CC", "시루봉")
-        )
-    }
-}
-
 //class MyPage : AppCompatActivity() {
 //
 //    lateinit var binding: ActivityMyPageBinding

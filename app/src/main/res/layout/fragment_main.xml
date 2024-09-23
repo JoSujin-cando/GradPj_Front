@@ -55,7 +55,7 @@
         android:src="@drawable/marker"
         app:layout_constraintBottom_toBottomOf="@+id/sketchMap"
         app:layout_constraintEnd_toEndOf="@+id/sketchMap"
-        app:layout_constraintHorizontal_bias="0.22"
+        app:layout_constraintHorizontal_bias="0.193"
         app:layout_constraintStart_toStartOf="@+id/sketchMap"
         app:layout_constraintTop_toTopOf="@+id/sketchMap"
         app:layout_constraintVertical_bias="0.681" />
@@ -68,7 +68,7 @@
         android:src="@drawable/marker"
         app:layout_constraintBottom_toBottomOf="@+id/sketchMap"
         app:layout_constraintEnd_toEndOf="@+id/sketchMap"
-        app:layout_constraintHorizontal_bias="0.255"
+        app:layout_constraintHorizontal_bias="0.24"
         app:layout_constraintStart_toStartOf="@+id/sketchMap"
         app:layout_constraintTop_toTopOf="@+id/sketchMap"
         app:layout_constraintVertical_bias="0.77" />
@@ -81,7 +81,7 @@
         android:src="@drawable/marker"
         app:layout_constraintBottom_toBottomOf="@+id/sketchMap"
         app:layout_constraintEnd_toEndOf="@+id/sketchMap"
-        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintHorizontal_bias="0.835"
         app:layout_constraintStart_toStartOf="@+id/sketchMap"
         app:layout_constraintTop_toTopOf="@+id/sketchMap"
         app:layout_constraintVertical_bias="0.125" />
@@ -94,7 +94,7 @@
         android:src="@drawable/marker"
         app:layout_constraintBottom_toBottomOf="@+id/sketchMap"
         app:layout_constraintEnd_toEndOf="@+id/sketchMap"
-        app:layout_constraintHorizontal_bias="0.815"
+        app:layout_constraintHorizontal_bias="0.835"
         app:layout_constraintStart_toStartOf="@+id/sketchMap"
         app:layout_constraintTop_toTopOf="@+id/sketchMap"
         app:layout_constraintVertical_bias="0.197" />
@@ -107,9 +107,9 @@
         android:src="@drawable/marker"
         app:layout_constraintBottom_toBottomOf="@+id/sketchMap"
         app:layout_constraintEnd_toEndOf="@+id/sketchMap"
-        app:layout_constraintHorizontal_bias="0.915"
+        app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="@+id/sketchMap"
         app:layout_constraintTop_toTopOf="@+id/sketchMap"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.197" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,7 +52,7 @@ class MyPage : AppCompatActivity() {
     }
 
     private fun fetchLiveData() {
-        val userId: Long = 1 // 실제로는 로그인된 사용자의 ID로 대체(수정해야 함)
+        val userId = getUserId(applicationContext)
         ApiClient.getApiService().getUserBookings(userId).enqueue(object : Callback<List<BookingResponse>> {
             override fun onResponse(call: Call<List<BookingResponse>>, response: Response<List<BookingResponse>>) {
                 if (response.isSuccessful) {
@@ -147,6 +147,26 @@ class MyPage : AppCompatActivity() {
     private fun showToast(message: String) {
         Toast.makeText(this@MyPage, message, Toast.LENGTH_SHORT).show()
     }
+
+    // 사용자 ID 불러오기 함수
+    private fun getUserId(context: Context): Long {
+        // 최신 MasterKey 생성
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        // 암호화된 SharedPreferences 생성
+        val sharedPreferences = EncryptedSharedPreferences.create(
+            context,
+            "encrypted_prefs", // 저장된 파일 이름
+            masterKey, // 마스터 키
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        // 저장된 사용자 ID를 불러옴 (없으면 기본값 0L 반환)
+        return sharedPreferences.getLong("userId", 0L)
+    }
 }
 
     private fun removeUserId(context: Context) {
@@ -178,6 +198,7 @@ class MyPage : AppCompatActivity() {
             Log.d(TAG, "userId 삭제에 실패했습니다. 현재 값: $deletedUserId")
         }
     }
+
 
 //class MyPage : AppCompatActivity() {
 //

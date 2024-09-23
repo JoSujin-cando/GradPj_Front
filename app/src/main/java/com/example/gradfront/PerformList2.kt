@@ -34,7 +34,7 @@ class PerformList2 : AppCompatActivity() {
         val date = intent.getStringExtra("date")
         val place = intent.getStringExtra("place")
         val genre = intent.getStringExtra("genre")
-        val price = intent.getStringExtra("price")
+        val price = intent.getIntExtra("price",0)
         val timetable = intent.getStringExtra("timetable")
         val notice = intent.getStringExtra("notice")
         val imageResId = intent.getStringExtra("imageResId") //Img 수정해야 함

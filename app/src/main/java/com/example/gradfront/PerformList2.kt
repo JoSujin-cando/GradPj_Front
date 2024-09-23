@@ -70,22 +70,22 @@ class PerformList2 : AppCompatActivity() {
         //인원 수 버튼 클릭 시
         binding.minusBtn.setOnClickListener {
             if (check == 1) {
+                binding.minusBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else {
                 if (count != 0)
                     count--
                 binding.num.setText(count.toString())
-            } else {
-                binding.minusBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.plusBtn.setOnClickListener {
             if (check == 1) {
-                count++
-                binding.num.setText(count.toString())
-            } else {
                 binding.plusBtn.isEnabled = false
                 Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else {
+                count++
+                binding.num.setText(count.toString())
             }
         }
 
@@ -93,12 +93,12 @@ class PerformList2 : AppCompatActivity() {
         binding.payBtn.setOnClickListener {
             if (check == 1) {
                 //버튼 클릭 시 결제 서빅스로 연결
+                binding.payBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else {
                 val userId = getUserId(applicationContext)
                 val ticketCount = count
                 prepareBookingAndPayment(userId, liveId, ticketCount)
-            } else {
-                binding.payBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
     }

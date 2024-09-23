@@ -21,7 +21,7 @@ class BookingPage : AppCompatActivity() {
         val notice = intent.getStringExtra("notice")
         val totalAmount = intent.getIntExtra("totalAmount", 0)
         val numberOfTickets = intent.getIntExtra("numberOfTickets", 0)
-        val imageResId = intent.getIntExtra("imageResId", R.drawable.ic_launcher_foreground)
+        val imageResId = intent.getStringExtra("imageResId")
 
         //받은 데이터를 UI에 표시
         binding.bookTitle.text = "공연명: $title"
@@ -31,6 +31,6 @@ class BookingPage : AppCompatActivity() {
         binding.bookPrice.text = "예매가: $totalAmount ($numberOfTickets)"
         binding.bookTimeTable.text = "$timetable"
         binding.bookNotice.text = "$notice"
-        binding.imageView.setImageResource(imageResId)
+        binding.imageView.load(imageResId)
     }
 }

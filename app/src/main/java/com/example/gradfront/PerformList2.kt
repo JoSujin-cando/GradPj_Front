@@ -78,7 +78,6 @@ class PerformList2 : AppCompatActivity() {
             if (check == 1) {
                 //버튼 클릭 시 결제 서빅스로 연결
                 val userId = getUserId(applicationContext)
-                val liveId = 1
                 val ticketCount = count
                 prepareBookingAndPayment(userId, liveId, ticketCount)
             } else {
@@ -88,7 +87,7 @@ class PerformList2 : AppCompatActivity() {
         }
     }
 
-    private fun prepareBookingAndPayment(userId: Long, liveId: Int, numberOfTickets: Int) {
+    private fun prepareBookingAndPayment(userId: Long, liveId: Long, numberOfTickets: Int) {
         val apiService: ApiService = ApiClient.getApiService()
         CoroutineScope(Dispatchers.IO).launch {
             // 1. 예약 생성

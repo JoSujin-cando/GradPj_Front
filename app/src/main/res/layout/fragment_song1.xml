@@ -41,7 +41,7 @@
         android:layout_marginEnd="32dp"
         android:height="70dp"
         android:backgroundTint="@color/grey"
-        android:text="이븐이프"
+        android:text="evenif"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,6 @@
 package com.example.gradfront.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -34,16 +35,18 @@ class SongFragment2 : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // RecyclerView와 Adapter 설정
         setupRecyclerView()
 
+        val artistName = arguments?.getString("artistName")
         val trackList = arguments?.getSerializable("trackList") as? ArrayList<SongRecommendResponse>
 
         if (trackList != null) {
-
+            binding.textView13.text = "$artistName 와(과) 비슷한 밴드의 노래 추천 결과입니다"
             // Adapter에 트랙 리스트 전달
             SongAdapter(trackList).also { adapter = it }
             binding.song2Rv.adapter = adapter

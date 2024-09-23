@@ -35,11 +35,24 @@ class SongFragment1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val button1: Button = view.findViewById(R.id.button1) // view에서 버튼 참조
+//        val button1: Button = view.findViewById(R.id.button1) // view에서 버튼 참조
+//
+//        button1.setOnClickListener {
+//            val artistName = button1.text.toString() // 버튼의 텍스트를 artistName으로 사용
+//            sendArtistNameToServer(artistName)
+//        }
 
-        button1.setOnClickListener {
-            val artistName = button1.text.toString() // 버튼의 텍스트를 artistName으로 사용
-            sendArtistNameToServer(artistName)
+        // 버튼들의 ID 목록
+        val buttonIds = listOf(R.id.button1, R.id.button2, R.id.button3, R.id.button4)
+
+        // 각 버튼에 클릭 리스너를 설정
+        buttonIds.forEach { buttonId ->
+            val button: Button = view.findViewById(buttonId)
+            button.setOnClickListener {
+                val artistName = button.text.toString() // 버튼의 텍스트를 artistName으로 사용
+                Log.d("Retrofit", artistName)
+                sendArtistNameToServer(artistName)
+            }
         }
     }
 
@@ -55,6 +68,7 @@ class SongFragment1 : Fragment() {
                     if (recommendedTracks != null) {
                         // 데이터를 Activity로 전달
                         val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                            putExtra("artistName", artistName)
                             putExtra("trackList", ArrayList(recommendedTracks))
                         }
                         startActivity(intent)

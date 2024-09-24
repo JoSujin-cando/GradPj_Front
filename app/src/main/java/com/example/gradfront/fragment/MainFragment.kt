@@ -112,6 +112,7 @@ class MainFragment : Fragment() {
                 putExtra("notice", item.liveData.notice)
                 putExtra("imageResId", item.liveData.image) // 이미지 URL 전달
                 putExtra("liveId", item.liveData.id)
+                putExtra("seat", item.liveData.remainNumOfSeats)
             }
             startActivity(intent)
         }

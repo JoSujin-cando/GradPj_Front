@@ -12,11 +12,19 @@ import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.PayRequest
 import android.widget.Toast
 import coil.load
+import com.example.gradfront.data.BookingResponse
+import com.example.gradfront.data.BookingStatus
+import com.example.gradfront.data.ClubData
+import com.example.gradfront.data.LiveData
+import com.example.gradfront.data.LiveDataWithClub
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
@@ -107,6 +115,31 @@ class PerformList2 : AppCompatActivity() {
                             Log.d("KakaoPaying", it)
                             openWebPage(it)
                         }
+
+//                        apiService.getBooking(bookingId).enqueue(object : Callback<BookingResponse> {
+//                            override fun onResponse(
+//                                call: Call<BookingResponse>,
+//                                bookingResponse: Response<BookingResponse>
+//                            ) {
+//                                if (bookingResponse.isSuccessful) {
+//                                    val booking = bookingResponse.body()
+//                                    if (booking != null) {
+//                                        if (booking.status == BookingStatus.COMPLETED) {
+//                                            // MainActivity로 이동
+//                                            val intent = Intent(this@PerformList2, MainActivity::class.java)
+//                                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+//                                            startActivity(intent)
+//                                            finish() // 현재 액티비티 종료
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            override fun onFailure(call: Call<BookingResponse>, t: Throwable) {
+//                                // 네트워크 오류 처리 또는 로깅
+//                                Log.e("BookingError", "Booking 요청 실패", t)
+//                            }
+//                        })
                     }
                 }
             }

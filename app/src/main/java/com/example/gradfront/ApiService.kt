@@ -45,6 +45,9 @@ interface ApiService {
     @GET("/booking/user/{userId}")
     fun getUserBookings(@Path("userId") userId: Long): Call<List<BookingResponse>>
 
+    @GET("booking/find/{bookingId}")
+    fun getBooking(@Path("bookingId") bookingId: Long): Call<BookingResponse>
+
     // liveId를 기반으로 개별 라이브 정보 조회
     @GET("/lives/{liveId}")
     fun getLiveDataById(@Path("liveId") liveId: Long): Call<LiveData>

@@ -50,6 +50,12 @@ class MainFragment : Fragment() {
         fetchLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // 홈 화면에 돌아올 때마다 데이터를 갱신하도록 API 호출
+        fetchLiveData()
+    }
+
     /**/
     private fun fetchLiveData() {
         // API 호출

@@ -10,5 +10,6 @@ data class BookingResponse(
     val totalAmount: Int,       // 예매 가격
     val userName: String,       // 유저 이름
     val userEmail: String,       // 유저 이메일
-    val status: BookingStatus
+    val status: BookingStatus,
+    val tid : String             // 고유 결제 번호
 )

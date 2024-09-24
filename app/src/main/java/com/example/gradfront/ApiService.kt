@@ -6,6 +6,7 @@ import com.example.gradfront.data.KakaoPayReadyResponse
 import com.example.gradfront.data.KakaoTokenRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.data.ClubData
+import com.example.gradfront.data.KakaoPayCancelResponse
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
 import com.example.gradfront.data.UserResponse
@@ -32,6 +33,9 @@ interface ApiService {
     @POST("payment/ready")
     suspend fun readyPayment(@Body request: PayRequest): Response<KakaoPayReadyResponse>
 
+    @POST("payment/cancel")
+    suspend fun cancelPayment(@Body payRequest: PayRequest): Response<KakaoPayCancelResponse>
+
     @GET("/lives/today")
     fun getLiveData(): Call<List<LiveData>>
 
@@ -40,6 +44,9 @@ interface ApiService {
 
     @GET("/booking/user/{userId}")
     fun getUserBookings(@Path("userId") userId: Long): Call<List<BookingResponse>>
+
+    @GET("booking/find/{bookingId}")
+    fun getBooking(@Path("bookingId") bookingId: Long): Call<BookingResponse>
 
     // liveId를 기반으로 개별 라이브 정보 조회
     @GET("/lives/{liveId}")

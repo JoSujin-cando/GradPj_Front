@@ -7,23 +7,27 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.PayRequest
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import coil.load
+import com.example.gradfront.data.BookingResponse
+import com.example.gradfront.data.BookingStatus
+import com.example.gradfront.data.ClubData
+import com.example.gradfront.data.LiveData
+import com.example.gradfront.data.LiveDataWithClub
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
@@ -97,6 +101,7 @@ class PerformList2 : AppCompatActivity() {
             }
         }
 
+
         //결제하기 클릭 시 결제 서비스로 연결
         binding.payBtn.setOnClickListener {
             if (check == 1) {
@@ -123,7 +128,7 @@ class PerformList2 : AppCompatActivity() {
 
             if (bookingResponse.isSuccessful) {
                 val bookingId = bookingResponse.body()?.id
-                Log.d("Booking", bookingId.toString())
+                Log.d("예매생성", bookingResponse.body().toString())
 
                 // 2. 결제 준비 요청
                 if (bookingId != null) {

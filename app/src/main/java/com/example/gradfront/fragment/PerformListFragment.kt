@@ -45,6 +45,12 @@ class PerformListFragment : Fragment() {
         binding.perfRv.addItemDecoration(SpacingItem(20))
     }
 
+    override fun onResume() {
+        super.onResume()
+        // PerformList2Activity에서 결제가 완료된 후 다시 돌아왔을 때 데이터를 새로고침
+        fetchLiveData()
+    }
+
     /**/
     private fun fetchLiveData() {
         // API 호출
@@ -97,8 +103,11 @@ class PerformListFragment : Fragment() {
         val adapter = PerformListAdapter(liveDataList) { item ->
             // PerformList2Activity로 이동할 때 클럽 이름도 함께 전달
             val intent = Intent(requireContext(), PerformList2::class.java).apply {
-                if (getCurrentDate().compareTo(item.liveData.date,true)<0) //이미 지난 날짜가 아닌 경우
-                    putExtra("check",1)
+                if (getCurrentDate().compareTo(item.liveData.date,true)>0) { //이미 지난 날짜인 경우(왼쪽이 크면 1, 작으면 -1)
+                    putExtra("check", 1)
+                }else{
+                    putExtra("check", 0)
+                }
                 putExtra("title", item.liveData.title)
                 putExtra("subtitle", item.liveData.bandLineup)
                 putExtra("date", item.liveData.date)
@@ -110,6 +119,7 @@ class PerformListFragment : Fragment() {
                 putExtra("notice", item.liveData.notice)
                 putExtra("imageResId", item.liveData.image) // 이미지 URL 전달-수정해야 함
                 putExtra("liveId", item.liveData.id)
+                putExtra("seat", item.liveData.remainNumOfSeats)
             }
             startActivity(intent)
         }

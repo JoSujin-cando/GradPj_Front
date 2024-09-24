@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,8 @@ import com.example.gradfront.data.PayRequest
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import coil.load
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
@@ -24,10 +27,23 @@ import kotlinx.coroutines.withContext
 
 class PerformList2 : AppCompatActivity() {
     var count = 0
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityPerformList2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // resultLauncher 초기화
+        resultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // PerformListActivity에 갱신 신호를 보냄
+                setResult(Activity.RESULT_OK)
+                finish() // PerformList2 액티비티 종료
+            }
+        }
 
         // Intent로부터 데이터 받기
         val title = intent.getStringExtra("title")
@@ -40,6 +56,7 @@ class PerformList2 : AppCompatActivity() {
         val imageResId = intent.getStringExtra("imageResId") //Img 수정해야 함
         val check = intent.getIntExtra("check", 0)
         val liveId = intent.getLongExtra("liveId", 1)
+        val seat = intent.getIntExtra("seat",-1)
 
         // 받은 데이터를 UI에 표시
         binding.PerfTitle.text = "공연명: $title"
@@ -50,26 +67,33 @@ class PerformList2 : AppCompatActivity() {
         binding.TimeTable.text = "$timetable"
         binding.notice.text = "$notice"
         binding.imageView2.load(imageResId)
+        binding.seat.text = "남은 좌석 수: $seat"
 
         //인원 수 버튼 클릭 시
         binding.minusBtn.setOnClickListener {
             if (check == 1) {
+                binding.minusBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else if (seat==0){
+                binding.minusBtn.isEnabled = false
+                Toast.makeText(this, "남은 좌석이 없습니다", Toast.LENGTH_SHORT).show()
+            } else {
                 if (count != 0)
                     count--
                 binding.num.setText(count.toString())
-            } else {
-                binding.minusBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.plusBtn.setOnClickListener {
             if (check == 1) {
-                count++
-                binding.num.setText(count.toString())
-            } else {
                 binding.plusBtn.isEnabled = false
                 Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else if (seat==0){
+                binding.plusBtn.isEnabled = false
+                Toast.makeText(this, "남은 좌석이 없습니다", Toast.LENGTH_SHORT).show()
+            } else {
+                count++
+                binding.num.setText(count.toString())
             }
         }
 
@@ -77,12 +101,15 @@ class PerformList2 : AppCompatActivity() {
         binding.payBtn.setOnClickListener {
             if (check == 1) {
                 //버튼 클릭 시 결제 서빅스로 연결
+                binding.payBtn.isEnabled = false
+                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
+            } else if (seat==0){
+                binding.payBtn.isEnabled = false
+                Toast.makeText(this, "남은 좌석이 없습니다", Toast.LENGTH_SHORT).show()
+            } else {
                 val userId = getUserId(applicationContext)
                 val ticketCount = count
                 prepareBookingAndPayment(userId, liveId, ticketCount)
-            } else {
-                binding.payBtn.isEnabled = false
-                Toast.makeText(this, "이미 지난 공연입니다", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -108,6 +135,9 @@ class PerformList2 : AppCompatActivity() {
                         // 3. 결제 페이지로 이동
                         kakaoPayResponse?.next_redirect_mobile_url?.let {
                             Log.d("KakaoPaying", it)
+
+                            // 결제 성공 후 PerformListActivity로 돌아가도록 결과 설정
+                            setResult(Activity.RESULT_OK)
                             openWebPage(it)
                         }
                     }
@@ -119,7 +149,7 @@ class PerformList2 : AppCompatActivity() {
     private fun openWebPage(url: String) {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            resultLauncher.launch(intent) // 결제 완료 후 다시 되돌아오게 함
         } catch (e: Exception) {
             Log.e("KakaoPay", "Cannot open web page: $url", e)
         }

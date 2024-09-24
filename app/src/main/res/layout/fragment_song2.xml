@@ -10,16 +10,15 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="80dp"
         android:text="이븐이프 와(과) 비슷한 밴드의 노래 추천 결과입니다"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.744"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView                                              
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/song2Rv"
         android:layout_width="0dp"
         android:layout_height="595dp"

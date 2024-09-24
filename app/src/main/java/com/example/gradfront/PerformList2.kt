@@ -15,6 +15,7 @@ import coil.load
 import com.example.gradfront.databinding.ActivityPerformList2Binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PerformList2 : AppCompatActivity() {

@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -57,6 +58,15 @@ class BookingPage : AppCompatActivity() {
                         val cancelResponse = cancelPayment.body() // 성공한 응답 본문
                         cancelResponse?.let {
                             Log.d("PaymentCancel", "결제 취소 성공")
+                            // 결제 취소가 성공하면 나의 페이지로 이동
+                            withContext(Dispatchers.Main) {
+                                // "나의 페이지"로 이동
+                                val intent = Intent(this@BookingPage, MyPage::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                                startActivity(intent)
+                                finish()  // 현재 액티비티 종료
+                            }
                         }
                     } else {
                         // 응답이 실패한 경우

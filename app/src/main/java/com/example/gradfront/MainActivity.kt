@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
         // 사용자 ID 불러오기
         val userId = getUserId(applicationContext)
         Log.d("MainActivity", "불러온 사용자 ID: $userId")

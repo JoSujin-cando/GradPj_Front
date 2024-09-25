@@ -3,13 +3,13 @@ package com.example.gradfront
 import com.example.gradfront.data.BookingRequest
 import com.example.gradfront.data.BookingResponse
 import com.example.gradfront.data.KakaoPayReadyResponse
-import com.example.gradfront.data.KakaoTokenRequest
+import com.example.gradfront.data.login.KakaoTokenRequest
 import com.example.gradfront.data.PayRequest
 import com.example.gradfront.data.ClubData
+import com.example.gradfront.data.login.KakaoLoginResponse
 import com.example.gradfront.data.KakaoPayCancelResponse
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
-import com.example.gradfront.data.UserResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,7 +21,7 @@ import retrofit2.http.*
 interface ApiService {
 
     @POST("/oauth/kakao")
-    fun sendKakaoAccessToken(@Body request: KakaoTokenRequest): Call<UserResponse>
+    fun sendKakaoAccessToken(@Body request: KakaoTokenRequest): Call<KakaoLoginResponse>
 
     @GET("/spotify/recommend")
     fun getSongRecommendations(@Query("artistName") artistName: String): Call<List<SongRecommendResponse>>

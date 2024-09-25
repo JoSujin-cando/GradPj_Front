@@ -1,16 +1,15 @@
 package com.example.gradfront
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.security.crypto.MasterKeys
-import com.example.gradfront.data.KakaoTokenRequest
-import com.example.gradfront.data.UserResponse
+import com.example.gradfront.data.login.KakaoLoginResponse
+import com.example.gradfront.data.login.KakaoTokenRequest
+import com.example.gradfront.data.login.Role
 import com.example.gradfront.databinding.ActivityLoginPageBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -79,19 +78,20 @@ class LoginPage : AppCompatActivity() {
     // 여기에서 sendTokenToBackend 함수 호출
     private fun sendTokenToBackend(accessToken: String) {
         val apiService = ApiClient.getApiService()  // Retrofit API 클라이언트
-        val call = apiService.sendKakaoAccessToken(KakaoTokenRequest(accessToken))
+        val call = apiService.sendKakaoAccessToken(KakaoTokenRequest(accessToken, Role.USER))
 
-        call.enqueue(object : Callback<UserResponse> {
+        call.enqueue(object : Callback<KakaoLoginResponse> {
             override fun onResponse(
-                call: Call<UserResponse>,
-                response: Response<UserResponse>
+                call: Call<KakaoLoginResponse>,
+                response: Response<KakaoLoginResponse>
             ) {
                 if (response.isSuccessful) {
-                    val user = response.body()
-                    Log.d("LoginActivity", "로그인 성공: ${user?.id}")
+                    val kakaoLoginResponse = response.body()
+                    val userId = kakaoLoginResponse?.userResponse?.id
+                    Log.d("LoginActivity", "로그인 성공:${userId}")
 
                     // EncryptedSharedPreferences를 사용하여 사용자 ID 저장
-                    saveUserId(user?.id ?: 0)
+                    saveUserId(userId ?: 0)
 
                     // 로그인 성공 후 메인 액티비티로 이동
                     startActivity(Intent(this@LoginPage, MainActivity::class.java))
@@ -100,8 +100,7 @@ class LoginPage : AppCompatActivity() {
                     Log.e("LoginActivity", "로그인 실패: 서버 응답 오류")
                 }
             }
-
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<KakaoLoginResponse>, t: Throwable) {
                 Log.e("LoginActivity", "로그인 실패: 네트워크 오류", t)
             }
         })

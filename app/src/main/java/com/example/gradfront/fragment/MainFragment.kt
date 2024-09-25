@@ -63,9 +63,6 @@ class MainFragment : Fragment() {
             override fun onResponse(call: Call<List<LiveData>>, response: Response<List<LiveData>>) {
                 if (response.isSuccessful) {
                     var liveDataList = response.body() ?: emptyList()
-                    // liveDataList를 id 순으로 오름차순 정렬
-                    liveDataList = liveDataList.sortedBy { it.id }
-
                     // 클럽 데이터를 각 라이브에 맞춰 가져오고 리사이클러뷰에 전달
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
 
@@ -78,7 +75,9 @@ class MainFragment : Fragment() {
                                         // 클럽 데이터를 포함하는 새로운 데이터 클래스를 사용
                                         updatedLiveDataList.add(LiveDataWithClub(liveData, club.clubName))
                                         if (updatedLiveDataList.size == liveDataList.size) {
-                                            // 모든 데이터를 불러왔으면 Adapter 설정
+                                            // 모든 데이터를 다 가져온 후에 다시 정렬
+                                            updatedLiveDataList.sortBy { it.liveData.id }
+                                            // Adapter 설정
                                             setupRecyclerView(updatedLiveDataList)
                                         }
                                     }

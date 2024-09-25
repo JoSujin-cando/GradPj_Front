@@ -20,7 +20,7 @@ import com.example.gradfront.fragment.SongFragment2
 
 class MainActivity : AppCompatActivity() {
     var waitTime = 0L
-    private var currentFragmentTag = "MainFragment" // 현재 프래그먼트 태그
+    var currentFragmentTag = "MainFragment" // 현재 프래그먼트 태그
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         if (trackList != null) {
-            // Fragment에 데이터 전달
+            // Fragment에 데이터 전달 및 SongFragment2로 전환
             val fragment = SongFragment2().apply {
                 arguments = Bundle().apply {
                     putString("artistName", artistName)
@@ -85,6 +85,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, fragment)
                 .commit()
+            // SongFragment2로 전환했으므로 currentFragmentTag를 SongFragment2로 갱신
+            currentFragmentTag = "SongFragment2"
         }
 
         binding.MyPageBtn.setOnClickListener {
@@ -139,5 +141,10 @@ class MainActivity : AppCompatActivity() {
                 else -> finish() // 기본적으로 액티비티 종료
             }
         }
+    }
+
+    // currentFragmentTag를 업데이트하는 함수
+    fun updateCurrentFragmentTag(tag: String) {
+        currentFragmentTag = tag
     }
 }

@@ -62,7 +62,9 @@ class MainFragment : Fragment() {
         ApiClient.getApiService().getLiveData().enqueue(object : Callback<List<LiveData>> {
             override fun onResponse(call: Call<List<LiveData>>, response: Response<List<LiveData>>) {
                 if (response.isSuccessful) {
-                    val liveDataList = response.body() ?: emptyList()
+                    var liveDataList = response.body() ?: emptyList()
+                    // liveDataList를 id 순으로 오름차순 정렬
+                    liveDataList = liveDataList.sortedBy { it.id }
 
                     // 클럽 데이터를 각 라이브에 맞춰 가져오고 리사이클러뷰에 전달
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
@@ -119,6 +121,7 @@ class MainFragment : Fragment() {
                 putExtra("imageResId", item.liveData.image) // 이미지 URL 전달
                 putExtra("liveId", item.liveData.id)
                 putExtra("seat", item.liveData.remainNumOfSeats)
+                putExtra("time", item.liveData.startTime)
             }
             startActivity(intent)
         }

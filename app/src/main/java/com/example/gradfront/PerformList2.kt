@@ -52,6 +52,7 @@ class PerformList2 : AppCompatActivity() {
         // Intent로부터 데이터 받기
         val title = intent.getStringExtra("title")
         val date = intent.getStringExtra("date")
+        val time = intent.getStringExtra("time")
         val place = intent.getStringExtra("place")
         val genre = intent.getStringExtra("genre")
         val price = intent.getIntExtra("price",0)
@@ -64,7 +65,7 @@ class PerformList2 : AppCompatActivity() {
 
         // 받은 데이터를 UI에 표시
         binding.PerfTitle.text = "공연명: $title"
-        binding.PerfDate.text = "공연일시: $date"
+        binding.PerfDate.text = "공연일시: $date + $time"
         binding.PerfPlace.text = "공연장소: $place"
         binding.genre.text = "장르: $genre"
         binding.price.text = "예매가: $price"

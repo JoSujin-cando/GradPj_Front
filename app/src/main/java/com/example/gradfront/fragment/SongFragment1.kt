@@ -35,13 +35,6 @@ class SongFragment1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val button1: Button = view.findViewById(R.id.button1) // view에서 버튼 참조
-//
-//        button1.setOnClickListener {
-//            val artistName = button1.text.toString() // 버튼의 텍스트를 artistName으로 사용
-//            sendArtistNameToServer(artistName)
-//        }
-
         // 버튼들의 ID 목록
         val buttonIds = listOf(R.id.button1, R.id.button2, R.id.button3, R.id.button4)
 

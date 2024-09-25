@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gradfront.MainActivity
 import com.example.gradfront.R
 import com.example.gradfront.SongAdapter
 import com.example.gradfront.data.SongRecommendResponse
@@ -66,12 +67,15 @@ class SongFragment2 : Fragment() {
     }
     private fun handleBackPressed() {
         // SongFragment2에서 뒤로가기 버튼을 누르면 SongFragment1으로 돌아가게 설정
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // 뒤로가기 동작 처리: SongFragment1으로 이동
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frm, SongFragment1())
                     .commit()
+
+                // MainActivity의 currentFragmentTag를 갱신
+                (activity as? MainActivity)?.updateCurrentFragmentTag("SongFragment1")
                 remove() // 다시 뒤로가기 눌렀을 때는 해당 콜백이 동작하지 않도록 해제
             }
         })

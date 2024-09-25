@@ -126,6 +126,7 @@ class MyPage : AppCompatActivity() {
 
     private fun checkIfCompleted(completedRequests: Int, totalRequests: Int, liveDataList: List<Pair<BookingResponse, LiveDataWithClub?>>) {
         if (completedRequests == totalRequests) {
+            val sortedList = liveDataList.sortedBy { it.first.id } // BookingResponse의 id로 정렬
             setUpRecyclerView(liveDataList)
         }
     }

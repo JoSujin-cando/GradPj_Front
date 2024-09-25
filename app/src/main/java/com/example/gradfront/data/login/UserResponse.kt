@@ -1,9 +1,9 @@
-package com.example.gradfront.data
+package com.example.gradfront.data.login
 
 // 사용자 정보 데이터 클래스
 data class UserResponse(
     val id: Long,
     val kakaoId: Long,
-    val username: String,
+    val userName: String,
     val role: String
 )

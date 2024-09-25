@@ -65,7 +65,7 @@ class PerformList2 : AppCompatActivity() {
 
         // 받은 데이터를 UI에 표시
         binding.PerfTitle.text = "공연명: $title"
-        binding.PerfDate.text = "공연일시: $date + $time"
+        binding.PerfDate.text = "공연일시: $date  $time"
         binding.PerfPlace.text = "공연장소: $place"
         binding.genre.text = "장르: $genre"
         binding.price.text = "예매가: $price"

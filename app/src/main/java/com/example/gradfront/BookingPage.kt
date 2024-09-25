@@ -36,7 +36,7 @@ class BookingPage : AppCompatActivity() {
         //받은 데이터를 UI에 표시
         binding.bookTitle.text = "공연명: $title"
         binding.bookDate.text = "예매 일시: $bookingDate"
-        binding.bookLiveDate.text = "공연일시: $date+$time"
+        binding.bookLiveDate.text = "공연일시: $date $time"
         binding.bookPlace.text = "공연장소: $place"
         binding.bookPrice.text = "예매가: $totalAmount ($numberOfTickets)"
         binding.bookTimeTable.text = "$timetable"

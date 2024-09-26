@@ -10,6 +10,7 @@ import com.example.gradfront.data.login.KakaoLoginResponse
 import com.example.gradfront.data.KakaoPayCancelResponse
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.SongRecommendResponse
+import com.example.gradfront.data.UserClubResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -52,7 +53,7 @@ interface ApiService {
     @GET("/lives/{liveId}")
     fun getLiveDataById(@Path("liveId") liveId: Long): Call<LiveData>
 
-    @GET("/clubs/{id}")
-    fun getClubDataById(@Path("id") clubId: Long): Call<ClubData>
+    @GET("/clubs/user/{id}")
+    fun getClubDataById(@Path("id") clubId: Long): Call<UserClubResponse>
 
 }

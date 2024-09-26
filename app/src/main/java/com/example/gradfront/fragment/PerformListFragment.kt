@@ -13,6 +13,7 @@ import com.example.gradfront.*
 import com.example.gradfront.data.ClubData
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.LiveDataWithClub
+import com.example.gradfront.data.UserClubResponse
 import com.example.gradfront.databinding.FragmentPerformListBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -66,8 +67,8 @@ class PerformListFragment : Fragment() {
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
 
                     liveDataList.forEach { liveData ->
-                        ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<ClubData> {
-                            override fun onResponse(call: Call<ClubData>, clubResponse: Response<ClubData>) {
+                        ApiClient.getApiService().getClubDataById(liveData.clubId).enqueue(object : Callback<UserClubResponse> {
+                            override fun onResponse(call: Call<UserClubResponse>, clubResponse: Response<UserClubResponse>) {
                                 if (clubResponse.isSuccessful) {
                                     val club = clubResponse.body()
                                     Log.d("공연리스트", club.toString())
@@ -82,7 +83,7 @@ class PerformListFragment : Fragment() {
                                 }
                             }
 
-                            override fun onFailure(call: Call<ClubData>, t: Throwable) {
+                            override fun onFailure(call: Call<UserClubResponse>, t: Throwable) {
                                 // 클럽 데이터 가져오기 실패 처리
                             }
                         })

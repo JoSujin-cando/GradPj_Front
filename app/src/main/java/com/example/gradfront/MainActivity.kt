@@ -6,6 +6,9 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.addCallback
+import androidx.core.view.WindowCompat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.gradfront.data.SongRecommendResponse
@@ -17,6 +20,8 @@ import com.example.gradfront.fragment.SongFragment2
 
 class MainActivity : AppCompatActivity() {
     var waitTime = 0L
+    var currentFragmentTag = "MainFragment" // 현재 프래그먼트 태그
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -70,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         if (trackList != null) {
-            // Fragment에 데이터 전달
+            // Fragment에 데이터 전달 및 SongFragment2로 전환
             val fragment = SongFragment2().apply {
                 arguments = Bundle().apply {
                     putString("artistName", artistName)
@@ -80,12 +85,15 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, fragment)
                 .commit()
+            // SongFragment2로 전환했으므로 currentFragmentTag를 SongFragment2로 갱신
+            currentFragmentTag = "SongFragment2"
         }
 
         binding.MyPageBtn.setOnClickListener {
             val intent = Intent(this, MyPage::class.java)
             startActivity(intent)
         }
+        handleBackPressForFragments()
     }
 
     // 사용자 ID 불러오기 함수
@@ -108,11 +116,35 @@ class MainActivity : AppCompatActivity() {
         return sharedPreferences.getLong("userId", 0L)
     }
 
-    override fun onBackPressed() {
-        if (System.currentTimeMillis() - waitTime >= 1500) {
-            waitTime = System.currentTimeMillis()
-        } else {
-            finish() // 액티비티 종료
+    private fun handleBackPressForFragments() {
+        // PerformListFragment, SongFragment1에서 뒤로가기를 누르면 MainFragment로 이동
+        onBackPressedDispatcher.addCallback(this) {
+            when (currentFragmentTag) {
+                "PerformListFragment", "SongFragment1" -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, MainFragment(), "MainFragment")
+                        .commit()
+                    currentFragmentTag = "MainFragment"
+                }
+                "MainFragment" -> {
+                    if (System.currentTimeMillis() - waitTime >= 1500) {
+                        waitTime = System.currentTimeMillis()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "뒤로가기를 한번 더 누르면 종료됩니다",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        finish() // 액티비티 종료
+                    }
+                }
+                else -> finish() // 기본적으로 액티비티 종료
+            }
         }
+    }
+
+    // currentFragmentTag를 업데이트하는 함수
+    fun updateCurrentFragmentTag(tag: String) {
+        currentFragmentTag = tag
     }
 }

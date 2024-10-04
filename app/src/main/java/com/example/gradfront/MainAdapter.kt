@@ -1,5 +1,6 @@
 package com.example.gradfront
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,7 @@ class MainAdapter(private val dataList: List<LiveDataWithClub>, private val Main
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val item = dataList[position]
         /**/
-        if(item.liveData.date.toString()==getCurrentDate()){ //만약 공연 날짜가 오늘이면 MainRv 아이템(오늘 공연 리스트)에 정보 전달
+        if(item.liveData.date == getCurrentDate()){ //만약 공연 날짜가 오늘이면 MainRv 아이템(오늘 공연 리스트)에 정보 전달
             holder.binding.textView20.text = item.liveData.title+" "+item.liveData.startTime
             holder.binding.textView28.text = item.liveData.bandLineup
             holder.binding.imageView4.load(item.liveData.image)

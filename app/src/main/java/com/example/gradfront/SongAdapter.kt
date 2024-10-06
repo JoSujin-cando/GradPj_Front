@@ -7,8 +7,10 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.gradfront.data.SongRecommendResponse
 import com.example.gradfront.databinding.ItemRecyclerViewBinding
+import com.example.gradfront.fragment.SongFragment2
 
-class SongAdapter(private val trackList: ArrayList<SongRecommendResponse>) :
+class SongAdapter(private val trackList: ArrayList<SongRecommendResponse>,
+                  private val fragment: SongFragment2) :
     RecyclerView.Adapter<SongAdapter.TrackViewHolder>() {
 
     class TrackViewHolder(val binding: ItemRecyclerViewBinding) :
@@ -28,6 +30,13 @@ class SongAdapter(private val trackList: ArrayList<SongRecommendResponse>) :
         holder.binding.imageView4.load(track.imageUrl) {
             transformations(CircleCropTransformation()) // 선택적으로 이미지 변환
         }
+
+        // 클릭 리스너 추가
+        holder.itemView.setOnClickListener {
+            // 클릭된 아이템의 previewUrl을 Fragment에 전달
+            fragment.playPreview(track.previewUrl) // 변경된 부분
+        }
+
     }
 
     override fun getItemCount(): Int = trackList.size

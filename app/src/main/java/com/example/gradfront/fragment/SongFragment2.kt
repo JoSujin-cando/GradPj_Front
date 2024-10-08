@@ -1,12 +1,14 @@
 package com.example.gradfront.fragment
 
 import android.annotation.SuppressLint
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 
@@ -25,6 +27,7 @@ import com.example.gradfront.databinding.FragmentSong2Binding
 class SongFragment2 : Fragment() {
     lateinit var binding: FragmentSong2Binding
     private lateinit var adapter: SongAdapter
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,12 +54,42 @@ class SongFragment2 : Fragment() {
 
         if (trackList != null) {
             binding.textView13.text = "$artistName 와(과) 비슷한 밴드의 노래 추천 결과입니다"
-            // Adapter에 트랙 리스트 전달
-            SongAdapter(trackList).also { adapter = it }
+            // Adapter에 트랙 리스트와 현재 Fragment 전달
+            adapter = SongAdapter(trackList, this) // 변경된 부분
             binding.song2Rv.adapter = adapter
         }
         // 뒤로가기 버튼 동작 처리
         handleBackPressed()
+    }
+
+    fun playPreview(previewUrl: String) {
+        // MediaPlayer가 이미 실행 중이라면 해제하고 새로 시작
+        mediaPlayer?.release()
+
+        // 새로운 MediaPlayer 인스턴스를 생성하고 미리듣기 URL 설정
+        mediaPlayer = MediaPlayer().apply {
+            setDataSource(previewUrl) // 미리듣기 URL 설정
+            prepareAsync() // 비동기 준비
+            setOnPreparedListener {
+                start() // 준비가 완료되면 재생 시작
+            }
+            setOnCompletionListener {
+                release() // 재생이 완료되면 리소스 해제
+            }
+            setOnErrorListener { mp, what, extra ->
+                // 오류 처리
+                Toast.makeText(requireContext(), "Error playing audio", Toast.LENGTH_SHORT).show()
+                release() // 오류 발생 시 리소스 해제
+                true // 오류 처리 완료
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Fragment가 화면에서 사라질 때 미디어 재생 중지 및 해제
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 
     private fun setupRecyclerView() {

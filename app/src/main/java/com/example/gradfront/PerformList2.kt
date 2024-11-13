@@ -96,7 +96,8 @@ class PerformList2 : AppCompatActivity() {
             } else if (seat==0){
                 binding.plusBtn.isEnabled = false
                 Toast.makeText(this, "남은 좌석이 없습니다", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            else {
                 count++
                 binding.num.setText(count.toString())
             }
@@ -112,7 +113,11 @@ class PerformList2 : AppCompatActivity() {
             } else if (seat==0){
                 binding.payBtn.isEnabled = false
                 Toast.makeText(this, "남은 좌석이 없습니다", Toast.LENGTH_SHORT).show()
-            } else {
+            } else if (count > seat) {
+                binding.payBtn.isEnabled = false
+                Toast.makeText(this, "남은 좌석 수보다 많은 좌석을 선택하셨습니다.", Toast.LENGTH_SHORT).show()
+            }
+            else {
                 val userId = getUserId(applicationContext)
                 val ticketCount = count
                 prepareBookingAndPayment(userId, liveId, ticketCount)

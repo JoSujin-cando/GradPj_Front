@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -31,6 +32,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CountDownLatch
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
@@ -92,6 +94,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                                                 location = club.location // 클럽 위치 추가
                                             )
                                         )
+                                        Log.d("공연장 위치 : ",club.location)
                                         if (updatedLiveDataList.size == liveDataList.size) {
                                             updatedLiveDataList.sortBy { it.liveData.id }
                                             setupRecyclerView(updatedLiveDataList)
@@ -106,11 +109,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                             }
                         })
                     }
-
-                    // club_id를 기반으로 마커 색상 변경
-                    val markerIds = liveDataList.map { liveData -> liveData.clubId }
-                    changeMarkerColors(markerIds)
-
                 } else {
                     Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
                 }
@@ -149,27 +147,25 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         return dateFormat.format(Date())
     }
 
-    // 현재 날짜 가져오는 함수
-    private fun getCurrentDate(): Date {
-        return Calendar.getInstance().time
-    }
-
-    // 날짜 비교 메서드
-    private fun isUpcomingEvent(eventDate: String): Boolean {
+    // 날짜 비교 함수: 공연이 오늘인지 확인
+    private fun isEventToday(eventDate: String): Boolean {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val event = dateFormat.parse(eventDate)
-        val today = getCurrentDate()
+        val today = dateFormat.parse(getCurrentDateToText())
 
-        return event != null && event.after(today)
+        return event != null && today != null && event == today
     }
 
     private fun addMarkersToMap(liveDataList: List<LiveDataWithClub>) {
+        val boundsBuilder = LatLngBounds.Builder()
+        val latch = CountDownLatch(liveDataList.size) // 비동기 작업 완료 대기 카운트
+
         for (liveDataWithClub in liveDataList) {
             geocodeAddressToLatLng(liveDataWithClub.location) { latLng ->
-                val markerColor = if (isUpcomingEvent(liveDataWithClub.liveData.date)) {
-                    BitmapDescriptorFactory.HUE_RED // 다가오는 공연은 빨간색
+                val markerColor = if (isEventToday(liveDataWithClub.liveData.date)) {
+                    BitmapDescriptorFactory.HUE_RED
                 } else {
-                    BitmapDescriptorFactory.HUE_GREEN // 지난 공연은 초록색
+                    BitmapDescriptorFactory.HUE_GREEN
                 }
 
                 val markerOptions = MarkerOptions()
@@ -178,14 +174,30 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(markerColor))
 
                 activity?.runOnUiThread {
-                    mMap.addMarker(markerOptions)
-                    if (liveDataList.indexOf(liveDataWithClub) == 0) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                    mMap.addMarker(markerOptions)?.let { marker ->
+                        boundsBuilder.include(marker.position)
                     }
+                    latch.countDown()
                 }
             }
         }
+
+        // 모든 마커 추가가 완료되면 카메라 위치를 업데이트
+        Thread {
+            latch.await() // 모든 비동기 작업이 끝날 때까지 대기
+            activity?.runOnUiThread {
+                try {
+                    val bounds = boundsBuilder.build()
+                    val padding = 100 // 화면 가장자리와의 패딩 (픽셀)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding)) // 여기서 moveCamera를 사용
+                } catch (e: Exception) {
+                    Log.e("MapError", "Failed to set camera bounds: ${e.message}")
+                }
+            }
+        }.start()
     }
+
+
 
 
     private fun geocodeAddressToLatLng(address: String, callback: (LatLng) -> Unit) {
@@ -216,23 +228,5 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 Log.e("Geocoding", "Request failed: ${e.message}")
             }
         })
-    }
-
-    private fun changeMarkerColors(markerIds: List<Long>) {
-        binding.marker1.setBackgroundColor(Color.GRAY)
-        binding.marker2.setBackgroundColor(Color.GRAY)
-        binding.marker3.setBackgroundColor(Color.GRAY)
-        binding.marker4.setBackgroundColor(Color.GRAY)
-        binding.marker5.setBackgroundColor(Color.GRAY)
-
-        for (markerId in markerIds) {
-            when (markerId) {
-                1L -> binding.marker1.setColorFilter(Color.RED)
-                2L -> binding.marker2.setColorFilter(Color.RED)
-                3L -> binding.marker3.setColorFilter(Color.RED)
-                4L -> binding.marker4.setColorFilter(Color.RED)
-                5L -> binding.marker5.setColorFilter(Color.RED)
-            }
-        }
     }
 }

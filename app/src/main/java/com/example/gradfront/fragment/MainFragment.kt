@@ -106,11 +106,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                             }
                         })
                     }
-
-                    // club_id를 기반으로 마커 색상 변경
-                    val markerIds = liveDataList.map { liveData -> liveData.clubId }
-                    changeMarkerColors(markerIds)
-
                 } else {
                     Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
                 }
@@ -149,27 +144,22 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         return dateFormat.format(Date())
     }
 
-    // 현재 날짜 가져오는 함수
-    private fun getCurrentDate(): Date {
-        return Calendar.getInstance().time
-    }
-
-    // 날짜 비교 메서드
-    private fun isUpcomingEvent(eventDate: String): Boolean {
+    // 날짜 비교 함수: 공연이 오늘인지 확인
+    private fun isEventToday(eventDate: String): Boolean {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val event = dateFormat.parse(eventDate)
-        val today = getCurrentDate()
+        val today = dateFormat.parse(getCurrentDateToText())
 
-        return event != null && event.after(today)
+        return event != null && today != null && event == today
     }
 
     private fun addMarkersToMap(liveDataList: List<LiveDataWithClub>) {
         for (liveDataWithClub in liveDataList) {
             geocodeAddressToLatLng(liveDataWithClub.location) { latLng ->
-                val markerColor = if (isUpcomingEvent(liveDataWithClub.liveData.date)) {
-                    BitmapDescriptorFactory.HUE_RED // 다가오는 공연은 빨간색
+                val markerColor = if (isEventToday(liveDataWithClub.liveData.date)) {
+                    BitmapDescriptorFactory.HUE_RED // 오늘 공연이 있으면 빨간색
                 } else {
-                    BitmapDescriptorFactory.HUE_GREEN // 지난 공연은 초록색
+                    BitmapDescriptorFactory.HUE_GREEN // 오늘 공연이 없으면 회색
                 }
 
                 val markerOptions = MarkerOptions()
@@ -186,7 +176,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
-
 
     private fun geocodeAddressToLatLng(address: String, callback: (LatLng) -> Unit) {
         val url = "https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}"
@@ -216,23 +205,5 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                 Log.e("Geocoding", "Request failed: ${e.message}")
             }
         })
-    }
-
-    private fun changeMarkerColors(markerIds: List<Long>) {
-        binding.marker1.setBackgroundColor(Color.GRAY)
-        binding.marker2.setBackgroundColor(Color.GRAY)
-        binding.marker3.setBackgroundColor(Color.GRAY)
-        binding.marker4.setBackgroundColor(Color.GRAY)
-        binding.marker5.setBackgroundColor(Color.GRAY)
-
-        for (markerId in markerIds) {
-            when (markerId) {
-                1L -> binding.marker1.setColorFilter(Color.RED)
-                2L -> binding.marker2.setColorFilter(Color.RED)
-                3L -> binding.marker3.setColorFilter(Color.RED)
-                4L -> binding.marker4.setColorFilter(Color.RED)
-                5L -> binding.marker5.setColorFilter(Color.RED)
-            }
-        }
     }
 }

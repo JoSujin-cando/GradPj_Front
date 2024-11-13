@@ -32,6 +32,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CountDownLatch
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
@@ -157,13 +158,14 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
     private fun addMarkersToMap(liveDataList: List<LiveDataWithClub>) {
         val boundsBuilder = LatLngBounds.Builder()
+        val latch = CountDownLatch(liveDataList.size) // 비동기 작업 완료 대기 카운트
 
         for (liveDataWithClub in liveDataList) {
             geocodeAddressToLatLng(liveDataWithClub.location) { latLng ->
                 val markerColor = if (isEventToday(liveDataWithClub.liveData.date)) {
-                    BitmapDescriptorFactory.HUE_RED // 오늘 공연이 있으면 빨간색
+                    BitmapDescriptorFactory.HUE_RED
                 } else {
-                    BitmapDescriptorFactory.HUE_GREEN // 오늘 공연이 없으면 회색
+                    BitmapDescriptorFactory.HUE_GREEN
                 }
 
                 val markerOptions = MarkerOptions()
@@ -172,21 +174,30 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(markerColor))
 
                 activity?.runOnUiThread {
-                    val marker = mMap.addMarker(markerOptions)
-                    if (marker != null) {
-                        boundsBuilder.include(marker.position) // 각 마커의 위치를 bounds에 추가
+                    mMap.addMarker(markerOptions)?.let { marker ->
+                        boundsBuilder.include(marker.position)
                     }
+                    latch.countDown()
                 }
             }
         }
 
-        // 모든 마커 추가 후 카메라 이동
-        activity?.runOnUiThread {
-            val bounds = boundsBuilder.build()
-            val padding = 100 // 화면 가장자리와의 패딩 (픽셀)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
-        }
+        // 모든 마커 추가가 완료되면 카메라 위치를 업데이트
+        Thread {
+            latch.await() // 모든 비동기 작업이 끝날 때까지 대기
+            activity?.runOnUiThread {
+                try {
+                    val bounds = boundsBuilder.build()
+                    val padding = 100 // 화면 가장자리와의 패딩 (픽셀)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding)) // 여기서 moveCamera를 사용
+                } catch (e: Exception) {
+                    Log.e("MapError", "Failed to set camera bounds: ${e.message}")
+                }
+            }
+        }.start()
     }
+
+
 
 
     private fun geocodeAddressToLatLng(address: String, callback: (LatLng) -> Unit) {

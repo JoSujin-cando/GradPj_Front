@@ -6,20 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".fragment.MainFragment">
 
-    <ImageView
-        android:id="@+id/sketchMap"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="362dp"
         android:layout_height="200dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        android:src="@drawable/sketchmap"
-        app:layout_constraintBottom_toTopOf="@+id/date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/sketchMap"-->
+<!--        android:layout_width="362dp"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:layout_marginTop="60dp"-->
+<!--        android:layout_marginEnd="24dp"-->
+<!--        android:layout_marginBottom="32dp"-->
+<!--        android:src="@drawable/sketchmap"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/date"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="1.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
         android:id="@+id/date"
@@ -29,7 +43,7 @@
         android:layout_marginTop="16dp"
         android:text="2024-07-15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sketchMap" />
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_rv"

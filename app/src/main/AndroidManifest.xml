@@ -4,6 +4,14 @@
     package="com.example.gradfront">
     <!-- 인터넷 사용 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 지도에 필요한 권한들 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- 지도에 필요한 OpenGL 기능 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <application
         android:name=".config.GlobalApplication"
@@ -41,6 +49,10 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="6aca60cf485fcdb138a0802846166ae7" />
+        <!-- 구글 지도 API 키를 설정 -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAIFUbIPkl4_6HV2dZQmL3VACMCMD4vFks"/>
 
         <activity
             android:name=".BookingPage"

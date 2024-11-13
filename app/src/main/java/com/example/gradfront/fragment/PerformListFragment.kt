@@ -74,7 +74,7 @@ class PerformListFragment : Fragment() {
                                     Log.d("공연리스트", club.toString())
                                     if (club != null) {
                                         // 클럽 데이터를 포함하는 새로운 데이터 클래스를 사용
-                                        updatedLiveDataList.add(LiveDataWithClub(liveData, club.clubName))
+                                        updatedLiveDataList.add(LiveDataWithClub(liveData, club.clubName,club.location))
                                         if (updatedLiveDataList.size == liveDataList.size) {
                                             // 모든 데이터를 다 가져온 후에 다시 정렬
                                             updatedLiveDataList.sortBy { it.liveData.id }

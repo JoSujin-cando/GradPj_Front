@@ -134,16 +134,25 @@ class MyPage : AppCompatActivity() {
                 } else {
                     "Unknown Club"
                 }
-                liveDataList.add(Pair(booking, LiveDataWithClub(liveData, clubName)))
+                val location = if (clubResponse.isSuccessful) {
+                    clubResponse.body()?.location ?: "Unknown Club Location"
+                } else {
+                    "Unknown Club Location"
+                }
+
+
+                liveDataList.add(Pair(booking, LiveDataWithClub(liveData, clubName, location)))
                 onComplete()
             }
 
             override fun onFailure(call: Call<UserClubResponse>, t: Throwable) {
-                liveDataList.add(Pair(booking, LiveDataWithClub(liveData, "Unknown Club")))
+                liveDataList.add(Pair(booking, LiveDataWithClub(liveData, "Unknown Club","Unknown Location")))
                 onComplete()
             }
         })
     }
+
+
 
     private fun handleFailedRequest(booking: BookingResponse, liveDataList: MutableList<Pair<BookingResponse, LiveDataWithClub?>>, onComplete: () -> Unit) {
         liveDataList.add(Pair(booking, null))

@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -92,6 +93,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                                                 location = club.location // 클럽 위치 추가
                                             )
                                         )
+                                        Log.d("공연장 위치 : ",club.location)
                                         if (updatedLiveDataList.size == liveDataList.size) {
                                             updatedLiveDataList.sortBy { it.liveData.id }
                                             setupRecyclerView(updatedLiveDataList)
@@ -154,6 +156,8 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMarkersToMap(liveDataList: List<LiveDataWithClub>) {
+        val boundsBuilder = LatLngBounds.Builder()
+
         for (liveDataWithClub in liveDataList) {
             geocodeAddressToLatLng(liveDataWithClub.location) { latLng ->
                 val markerColor = if (isEventToday(liveDataWithClub.liveData.date)) {
@@ -168,14 +172,22 @@ class MainFragment : Fragment(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(markerColor))
 
                 activity?.runOnUiThread {
-                    mMap.addMarker(markerOptions)
-                    if (liveDataList.indexOf(liveDataWithClub) == 0) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                    val marker = mMap.addMarker(markerOptions)
+                    if (marker != null) {
+                        boundsBuilder.include(marker.position) // 각 마커의 위치를 bounds에 추가
                     }
                 }
             }
         }
+
+        // 모든 마커 추가 후 카메라 이동
+        activity?.runOnUiThread {
+            val bounds = boundsBuilder.build()
+            val padding = 100 // 화면 가장자리와의 패딩 (픽셀)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+        }
     }
+
 
     private fun geocodeAddressToLatLng(address: String, callback: (LatLng) -> Unit) {
         val url = "https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}"

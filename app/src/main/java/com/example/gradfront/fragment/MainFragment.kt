@@ -3,68 +3,79 @@ package com.example.gradfront.fragment
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gradfront.*
-import com.example.gradfront.data.ClubData
 import com.example.gradfront.data.LiveData
 import com.example.gradfront.data.LiveDataWithClub
 import com.example.gradfront.data.UserClubResponse
 import com.example.gradfront.databinding.FragmentMainBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+class MainFragment : Fragment(), OnMapReadyCallback {
 
-
-class MainFragment : Fragment() {
     lateinit var binding: FragmentMainBinding
+    private lateinit var mMap: GoogleMap
+    private val apiKey = "AIzaSyAIFUbIPkl4_6HV2dZQmL3VACMCMD4vFks" // Geocoding API 키 입력
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentMainBinding.inflate(layoutInflater, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
 
-        // 현재 날짜를 가져와서 TextView에 넣기
-        val currentDate = getCurrentDate()
+        // 현재 날짜를 TextView에 설정
+        val currentDate = getCurrentDateToText()
         binding.date.text = currentDate
+
+        // SupportMapFragment를 초기화하고 지도가 준비되면 onMapReady를 호출
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         return binding.root
     }
 
-    //리사이클러뷰 Adapter랑 layoutmanager 붙이기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // RecyclerView 설정
         binding.mainRv.layoutManager = LinearLayoutManager(requireContext())
-
-        /*Retrofit을 통해 데이터를 불러옴*/
-        fetchLiveData()
+        fetchLiveData() // 데이터 로드
     }
 
     override fun onResume() {
         super.onResume()
-        // 홈 화면에 돌아올 때마다 데이터를 갱신하도록 API 호출
-        fetchLiveData()
+        fetchLiveData() // 돌아올 때마다 데이터를 갱신
     }
 
-    /**/
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        fetchLiveData() // 지도 준비 후 데이터 로드
+    }
+
     private fun fetchLiveData() {
-        // API 호출
         ApiClient.getApiService().getLiveData().enqueue(object : Callback<List<LiveData>> {
             override fun onResponse(call: Call<List<LiveData>>, response: Response<List<LiveData>>) {
                 if (response.isSuccessful) {
-                    var liveDataList = response.body() ?: emptyList()
-                    // 클럽 데이터를 각 라이브에 맞춰 가져오고 리사이클러뷰에 전달
+                    val liveDataList = response.body() ?: emptyList()
                     val updatedLiveDataList = mutableListOf<LiveDataWithClub>()
 
                     liveDataList.forEach { liveData ->
@@ -73,25 +84,30 @@ class MainFragment : Fragment() {
                                 if (clubResponse.isSuccessful) {
                                     val club = clubResponse.body()
                                     if (club != null) {
-                                        // 클럽 데이터를 포함하는 새로운 데이터 클래스를 사용
-                                        updatedLiveDataList.add(LiveDataWithClub(liveData, club.clubName))
+                                        // 클럽 정보와 함께 LiveDataWithClub 객체 생성
+                                        updatedLiveDataList.add(
+                                            LiveDataWithClub(
+                                                liveData = liveData,
+                                                clubName = club.clubName,
+                                                location = club.location // 클럽 위치 추가
+                                            )
+                                        )
                                         if (updatedLiveDataList.size == liveDataList.size) {
-                                            // 모든 데이터를 다 가져온 후에 다시 정렬
                                             updatedLiveDataList.sortBy { it.liveData.id }
-                                            // Adapter 설정
                                             setupRecyclerView(updatedLiveDataList)
+                                            addMarkersToMap(updatedLiveDataList) // 위치 정보 기반 마커 추가
                                         }
                                     }
                                 }
                             }
 
                             override fun onFailure(call: Call<UserClubResponse>, t: Throwable) {
-                                // 클럽 데이터 가져오기 실패 처리
+                                Log.e("MainFragment", "Failed to fetch club info", t)
                             }
                         })
                     }
 
-                    // club_id를 기반으로 마커 색상을 변경
+                    // club_id를 기반으로 마커 색상 변경
                     val markerIds = liveDataList.map { liveData -> liveData.clubId }
                     changeMarkerColors(markerIds)
 
@@ -108,17 +124,17 @@ class MainFragment : Fragment() {
 
     private fun setupRecyclerView(liveDataList: List<LiveDataWithClub>) {
         val adapter = MainAdapter(liveDataList) { item ->
-            // PerformList2Activity로 이동할 때 클럽 이름도 함께 전달
             val intent = Intent(requireContext(), PerformList2::class.java).apply {
                 putExtra("title", item.liveData.title)
                 putExtra("subtitle", item.liveData.bandLineup)
                 putExtra("date", item.liveData.date)
-                putExtra("place", item.clubName)  // clubName 추가
+                putExtra("place", item.clubName)
+                putExtra("location", item.location)
                 putExtra("genre", item.liveData.genre)
                 putExtra("price", item.liveData.advancePrice)
                 putExtra("timetable", item.liveData.timetable)
                 putExtra("notice", item.liveData.notice)
-                putExtra("imageResId", item.liveData.image) // 이미지 URL 전달
+                putExtra("imageResId", item.liveData.image)
                 putExtra("liveId", item.liveData.id)
                 putExtra("seat", item.liveData.remainNumOfSeats)
                 putExtra("time", item.liveData.startTime)
@@ -128,23 +144,87 @@ class MainFragment : Fragment() {
         binding.mainRv.adapter = adapter
     }
 
-    // 현재 날짜를 가져오는 함수
-    private fun getCurrentDate(): String {
+    private fun getCurrentDateToText(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = Date()
-        return dateFormat.format(date)
+        return dateFormat.format(Date())
     }
 
-    // 마커 ID에 따라 해당하는 버튼의 색상 변경
+    // 현재 날짜 가져오는 함수
+    private fun getCurrentDate(): Date {
+        return Calendar.getInstance().time
+    }
+
+    // 날짜 비교 메서드
+    private fun isUpcomingEvent(eventDate: String): Boolean {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val event = dateFormat.parse(eventDate)
+        val today = getCurrentDate()
+
+        return event != null && event.after(today)
+    }
+
+    private fun addMarkersToMap(liveDataList: List<LiveDataWithClub>) {
+        for (liveDataWithClub in liveDataList) {
+            geocodeAddressToLatLng(liveDataWithClub.location) { latLng ->
+                val markerColor = if (isUpcomingEvent(liveDataWithClub.liveData.date)) {
+                    BitmapDescriptorFactory.HUE_RED // 다가오는 공연은 빨간색
+                } else {
+                    BitmapDescriptorFactory.HUE_GREEN // 지난 공연은 초록색
+                }
+
+                val markerOptions = MarkerOptions()
+                    .position(latLng)
+                    .title("${liveDataWithClub.liveData.title} - ${liveDataWithClub.clubName}")
+                    .icon(BitmapDescriptorFactory.defaultMarker(markerColor))
+
+                activity?.runOnUiThread {
+                    mMap.addMarker(markerOptions)
+                    if (liveDataList.indexOf(liveDataWithClub) == 0) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun geocodeAddressToLatLng(address: String, callback: (LatLng) -> Unit) {
+        val url = "https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}"
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                val json = response.body?.string()
+                if (response.isSuccessful && json != null) {
+                    val jsonObject = JSONObject(json)
+                    val results = jsonObject.getJSONArray("results")
+                    if (results.length() > 0) {
+                        val location = results.getJSONObject(0)
+                            .getJSONObject("geometry")
+                            .getJSONObject("location")
+                        val lat = location.getDouble("lat")
+                        val lng = location.getDouble("lng")
+                        callback(LatLng(lat, lng))
+                    }
+                } else {
+                    Log.e("Geocoding", "Geocoding API failed: ${response.message}")
+                }
+            }
+
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                Log.e("Geocoding", "Request failed: ${e.message}")
+            }
+        })
+    }
+
     private fun changeMarkerColors(markerIds: List<Long>) {
-        // 모든 마커의 색상을 기본값으로 설정 (원하는 기본 색상 지정)
         binding.marker1.setBackgroundColor(Color.GRAY)
         binding.marker2.setBackgroundColor(Color.GRAY)
         binding.marker3.setBackgroundColor(Color.GRAY)
         binding.marker4.setBackgroundColor(Color.GRAY)
         binding.marker5.setBackgroundColor(Color.GRAY)
 
-        // 마커 ID에 따라 해당하는 버튼의 색상을 변경
         for (markerId in markerIds) {
             when (markerId) {
                 1L -> binding.marker1.setColorFilter(Color.RED)

@@ -3,10 +3,12 @@ package com.example.gradfront
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -17,6 +19,11 @@ import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 
 class MyPage : AppCompatActivity() {
 
@@ -54,12 +61,13 @@ class MyPage : AppCompatActivity() {
     private fun fetchLiveData() {
         val userId = getUserId(applicationContext)
         ApiClient.getApiService().getUserBookings(userId).enqueue(object : Callback<List<BookingResponse>> {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<List<BookingResponse>>, response: Response<List<BookingResponse>>) {
                 if (response.isSuccessful) {
-                    // COMPLETED 상태의 예매만 필터링
-                    var bookingList = response.body()?.filter { it.status == BookingStatus.COMPLETED } ?: emptyList()
-                    // liveDataList를 id 순으로 오름차순 정렬
-                    bookingList = bookingList.sortedBy { it.id }
+                    val bookingList = response.body()?.filter {
+                        // COMPLETED 상태이면서 오늘 날짜 이후의 공연만 필터링
+                        it.status == BookingStatus.COMPLETED && isAfterToday(it.bookingDate)
+                    }?.sortedBy { it.id } ?: emptyList()
                     fetchLiveDataWithClubs(bookingList)
                 } else {
                     showToast("Failed to load booking data")
@@ -70,6 +78,24 @@ class MyPage : AppCompatActivity() {
                 showToast("Error: ${t.message}")
             }
         })
+    }
+
+    // 날짜가 오늘 이후인지 확인하는 함수
+    private fun isAfterToday(bookingDate: String): Boolean {
+        return try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val bookingDateParsed = dateFormat.parse(bookingDate)
+            val today = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }.time
+
+            bookingDateParsed?.after(today) == true || bookingDateParsed?.equals(today) == true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun fetchLiveDataWithClubs(bookingList: List<BookingResponse>) {

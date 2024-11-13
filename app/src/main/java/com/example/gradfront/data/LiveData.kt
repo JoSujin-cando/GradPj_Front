@@ -15,6 +15,6 @@ data class LiveData(
     val timetable: String,
     val image: String, // 이미지 경로
     val remainNumOfSeats: Int,
-    val startTime: Time
+    val startTime: String
 )
 

@@ -52,7 +52,7 @@
         <!-- 구글 지도 API 키를 설정 -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAIFUbIPkl4_6HV2dZQmL3VACMCMD4vFks"/>
+            android:value=" "/>
 
         <activity
             android:name=".BookingPage"
